@@ -1,9 +1,10 @@
-import { createBrowserRouter } from "react-router-dom"
-
+import { RouterProvider } from "react-router-dom"
+import './assets/sass/style.scss'
+import './assets/css/style.css'
+import { MainRoutes } from "./routes/MainRoutes"
 function App() {
-createBrowserRouter()
   return (
-<></>
+    <RouterProvider router={MainRoutes} />
   )
 }
 
