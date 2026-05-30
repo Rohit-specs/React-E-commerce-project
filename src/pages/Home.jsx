@@ -1,83 +1,305 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Container, Image, Row } from "react-bootstrap";
 import Slider from "react-slick";
 import HomeCarousel from "../components/HomeCarousel";
+import { Link } from "react-router-dom";
+import { Heart, Search } from "react-bootstrap-icons";
+
 
 const Home = () => {
-    
-    return (
-        // <div className="ltn__slider-area ltn__slider-3 ltn__slider-6 section-bg-1">
-        //     <Slider {...settings} className="ltn__slide-one-active slick-slide-arrow-1 slick-slide-dots-1 arrow-white---">
-
-        //         <div className="ltn__slide-item ltn__slide-item-8 text-color-white---- bg-image bg-overlay-theme-black-80---" data-bs-bg="img/slider/1.jpg">
-        //             <div className="ltn__slide-item-inner">
-        //                 <Container className="container">
-        //                     <Row>
-        //                         <Col lg="12" className="align-self-center">
-        //                             <div className="slide-item-info">
-        //                                 <div className="slide-item-info-inner ltn__slide-animation">
-        //                                     <div className="slide-item-info">
-        //                                         <div className="slide-item-info-inner ltn__slide-animation">
-        //                                             <h1 className="slide-title animated ">Fresh Flower</h1>
-        //                                             <h6 className="slide-sub-title ltn__body-color slide-title-line animated">Natural & Beautiful Flower Here</h6>
-        //                                             <div className="slide-brief animated">
-        //                                                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p>
-        //                                             </div>
-        //                                             <div className="btn-wrapper animated">
-        //                                                 <a href="/shop" className="theme-btn-1 btn btn-round">Shop Now</a>
-        //                                             </div>
-        //                                         </div>
-        //                                     </div>
-        //                                 </div>
-        //                             </div>
-        //                             <div className="slide-item-img">
-        //                                 <Image src="img/slider/41-1.png" alt="#" />
-        //                                 <span className="call-to-circle-1"></span>
-        //                             </div>
-        //                         </Col>
-        //                     </Row>
-        //                 </Container>
-        //             </div>
-        //         </div>
-        //     </Slider>
-        //     {/* <div className="ltn__slide-one-active slick-slide-arrow-1 slick-slide-dots-1 arrow-white---">
+    const [productsData, setProductsData] = useState([])
+    useEffect(() => {
+        fetch('https://dummyjson.com/products')
+            .then((res) => res.json())
+            .then((data) => {
+                setProductsData(data.products);
+            })
 
 
-        //         <div className="ltn__slide-item ltn__slide-item-8 text-color-white---- bg-image bg-overlay-theme-black-80---" data-bs-bg="img/slider/3.jpg">
-        //             <div className="ltn__slide-item-inner">
-        //                 <div className="container">
-        //                     <div className="row">
-        //                         <div className="col-lg-12 align-self-center">
-        //                             <div className="slide-item-info">
-        //                                 <div className="slide-item-info-inner ltn__slide-animation">
-        //                                     <div className="slide-item-info">
-        //                                         <div className="slide-item-info-inner ltn__slide-animation">
-        //                                             <h1 className="slide-title animated ">Fresh Flower</h1>
-        //                                             <h6 className="slide-sub-title ltn__body-color slide-title-line animated">Natural & Beautiful Flower Here</h6>
-        //                                             <div className="slide-brief animated">
-        //                                                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p>
-        //                                             </div>
-        //                                             <div className="btn-wrapper animated">
-        //                                                 <a href="service.html" className="theme-btn-1 btn btn-round">Shop Now</a>
-        //                                             </div>
-        //                                         </div>
-        //                                     </div>
-        //                                 </div>
-        //                             </div>
-        //                             <div className="slide-item-img">
-        //                                 <Image src="img/slider/41-1.png" alt="#" />
-        //                                 <span className="call-to-circle-1"></span>
-        //                             </div>
-        //                         </div>
-        //                     </div>
-        //                 </div>
-        //             </div>
-        //         </div>
-        //     </div> */}
-        // </div>
-        <>
-        <HomeCarousel/>
-        </>
+    }, [])
+    return (<>
+        <HomeCarousel />
+        <div className="ltn__feature-area mt-100 mt--65" >
+            <Container>
+                <Row>
+                    <Col lg={12}>
+                        <div className="ltn__feature-item-box-wrap ltn__feature-item-box-wrap-2 z-1 ltn__border section-bg-6 position-relative">
+                            <div className="ltn__feature-item ltn__feature-item-8">
+                                <div className="ltn__feature-icon">
+                                    <Image src="img/icons/svg/8-trolley.svg" alt="#" />
+                                </div>
+                                <div className="ltn__feature-info">
+                                    <h4>Free shipping</h4>
+                                    <p>On all orders over $49.00</p>
+                                </div>
+                            </div>
+                            <div className="ltn__feature-item ltn__feature-item-8">
+                                <div className="ltn__feature-icon">
+                                    <Image src="img/icons/svg/9-money.svg" alt="#" />
+                                </div>
+                                <div className="ltn__feature-info">
+                                    <h4>15 days returns</h4>
+                                    <p>Moneyback guarantee</p>
+                                </div>
+                            </div>
+                            <div className="ltn__feature-item ltn__feature-item-8">
+                                <div className="ltn__feature-icon">
+                                    <Image src="img/icons/svg/10-credit-card.svg" alt="#" />
+                                </div>
+                                <div className="ltn__feature-info">
+                                    <h4>Secure checkout</h4>
+                                    <p>Protected by Paypal</p>
+                                </div>
+                            </div>
+                            <div className="ltn__feature-item ltn__feature-item-8">
+                                <div className="ltn__feature-icon">
+                                    <Image src="img/icons/svg/11-gift-card.svg" alt="#" />
+                                </div>
+                                <div className="ltn__feature-info">
+                                    <h4>Offer & gift here</h4>
+                                    <p>On all orders over</p>
+                                </div>
+                            </div>
+                        </div>
+                    </Col>
+                </Row>
+            </Container>
+        </div>
+        <div className="ltn__banner-area  mt-80">
+            <Container>
+                <Row className="justify-content-center">
+                    <Col lg={4} md={6}>
+                        <div className="ltn__banner-item">
+                            <div className="ltn__banner-img">
+                                <Link href="/shop"><Image src="img/banner/1.jpg" alt="Banner Image" /></Link>
+                            </div>
+                        </div>
+                    </Col>
+                    <Col lg={4} md={6}>
+                        <div className="ltn__banner-item">
+                            <div className="ltn__banner-img">
+                                <Link href="/shop"><Image src="img/banner/2.jpg" alt="Banner Image" /></Link>
+                            </div>
+                        </div>
+                    </Col>
+                    <Col lg={4} md={6}>
+                        <div className="ltn__banner-item">
+                            <div className="ltn__banner-img">
+                                <Link href="/shop"><Image src="img/banner/3.jpg" alt="Banner Image" /></Link>
+                            </div>
+                        </div>
+                    </Col>
+                </Row>
+            </Container>
+        </div>
+        <div className="ltn__product-area ltn__product-gutter  pt-65 pb-40">
+            <Container >
+                <Row>
+                    <Col lg={12}>
+                        <div className="section-title-area text-center">
+                            <h1 className="section-title section-title-border">new arrival items</h1>
+                        </div>
+                    </Col>
+                </Row>
+                <Row className="justify-content-center">
+                    {productsData.slice(0, 8).map((value, index) => {
+                        return (
+
+                            <Col key={index} className="col-lg-3 col-md-4 col-sm-6 col-6">
+                                <div className="ltn__product-item text-center">
+                                    <div className="product-img">
+                                        <Link to="/shop"><Image src={`${value.images}`} alt="#" /></Link>
+                                        <div className="product-badge">
+                                            <ul>
+                                                <li className="badge-2">{Math.round(value.discountPercentage)}%</li>
+                                            </ul>
+                                        </div>
+                                        <div className="product-hover-action product-hover-action-2">
+                                            <ul>
+                                                <li>
+                                                    <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                        <Search />
+                                                    </a>
+                                                </li>
+                                                <li className="add-to-cart">
+                                                    <a href="#" title="Add to Cart" data-bs-toggle="modal" data-bs-target="#add_to_cart_modal">
+                                                        <span className="cart-text d-none d-xl-block">Add to Cart</span>
+                                                        <span className="d-block d-xl-none"><i className="icon-handbag"></i></span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                        <Heart />
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div className="product-info">
+                                        <h2 className="product-title"><a href="product-details.html">Pink Flower Tree</a></h2>
+                                        <div className="product-price">
+                                            <span>${value.price}</span>
+                                            <del>${(value.price / (1 - (value.discountPercentage / 100))).toFixed(2)}</del>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Col>
+                        )
+                    })}
+
+
+                </Row>
+            </Container>
+        </div>
+        <div className="ltn__banner-area ">
+            <Container>
+                <Row>
+                    <Col md={6}>
+                        <div className="ltn__banner-item">
+                            <div className="ltn__banner-img">
+                                <Link to="/shop"><Image src="img/banner/6.jpg" alt="Banner Image" /></Link>
+                            </div>
+                        </div>
+                    </Col>
+                    <Col md={6}>
+                        <div className="ltn__banner-item">
+                            <div className="ltn__banner-img">
+                                <Link to="/shop"><Image src="img/banner/7.jpg" alt="Banner Image" /></Link>
+                            </div>
+                        </div>
+                    </Col>
+                </Row>
+            </Container>
+        </div>
+        {/* incompleted section */}
+        <div className="ltn__product-slider-area ltn__product-gutter  pt-60 pb-40">
+            <Container>
+                <Row >
+                    <Col lg={12}>
+                        <div className="section-title-area text-center">
+                            <h1 className="section-title section-title-border">top products</h1>
+                        </div>
+                    </Col>
+                </Row>
+                <Row className="ltn__product-slider-item-four-active slick-arrow-1">
+                    {productsData.map((value, index) => {
+                        return (
+                            <Col xs={12} key={index}>
+
+                                <div className="ltn__product-item text-center">
+                                    <div className="product-img">
+                                        <Link to="/shop"><Image src={value.images} alt="#" /></Link>
+                                        <div className="product-badge">
+                                            <ul>
+                                                <li className="badge-2">{Math.round(value.discountPercentage)}%</li>
+                                            </ul>
+                                        </div>
+                                        <div className="product-hover-action product-hover-action-2">
+                                            <ul>
+                                                <li>
+                                                    <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                        <Search />
+                                                    </a>
+                                                </li>
+                                                <li className="add-to-cart">
+                                                    <a href="#" title="Add to Cart" data-bs-toggle="modal" data-bs-target="#add_to_cart_modal">
+                                                        <span className="cart-text d-none d-xl-block">Add to Cart</span>
+                                                        <span className="d-block d-xl-none"><i className="icon-handbag"></i></span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                        <Heart />
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div className="product-info">
+                                        <h2 className="product-title"><Link to="/shop">{value.title}</Link></h2>
+                                        <div className="product-price">
+                                            <span>${value.price}</span>
+                                            <del>${(value.price / (1 - (value.discountPercentage / 100))).toFixed(2)}</del>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Col>
+                        )
+                    })}
+
+
+                </Row>
+            </Container>
+        </div>
+        <div className="ltn__banner-area ">
+            <Container>
+                <Row>
+                    <Col md={12}>
+                        <div className="ltn__banner-item">
+                            <div className="ltn__banner-img">
+                                <Link to="/shop"><Image src="img/banner/10.jpg" alt="Banner Image" /></Link>
+                            </div>
+                        </div>
+                    </Col>
+                </Row>
+            </Container>
+
+        </div >
+        {/* incompleted section */}
+        <div className="ltn__blog-area  pt-60 pb-30">
+            <Container>
+                <Row>
+                    <Col lg={12}>
+                        <div className="section-title-area text-center">
+                            <h1 className="section-title section-title-border">latest news</h1>
+                        </div>
+                    </Col>
+                </Row>
+                <Row className="ltn__blog-slider-one-active slick-arrow-1">
+                    <Col lg={12}>
+                        <div className="ltn__blog-item">
+                            <div className="ltn__blog-img">
+                                <Link to="/blog-details"><Image src="img/blog/1.jpg" alt="#" /></Link>
+                            </div>
+                            <div className="ltn__blog-brief">
+                                <div className="ltn__blog-meta">
+                                    <ul>
+                                        <li className="ltn__blog-author d-none">
+                                            <a href="#">by: Admin</a>
+                                        </li>
+                                        <li>
+                                            <span> Nov 18, 2020</span>
+                                        </li>
+                                        <li className="ltn__blog-comment">
+                                            <a href="#"><i className="icon-speech"></i> 2</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <h3 className="ltn__blog-title blog-title-line"><Link to="/blog-details">Lorem ipsum dolor sit amet con adipisicing elit sed </Link></h3>
+                            </div>
+                        </div>
+                    </Col>
+                </Row>
+            </Container>
+        </div>
+        <div className="ltn__brand-logo-area  ltn__brand-logo-1 section-bg-1 pt-35 pb-35 plr--5">
+            <Container fluid>
+                <Row className="ltn__brand-logo-active">
+                    {productsData.slice(0,6).map((val, index) => {
+                        return (
+                            <Col key={index}>
+                                <div className="ltn__brand-logo-item">
+                                    <Image src={value.thumbnail} alt="Brand Logo" />
+                                </div>
+                            </Col>
+                        )
+                    })}
+
+
+                </Row>
+            </Container>
+        </div>
+    </>
     )
 }
 
