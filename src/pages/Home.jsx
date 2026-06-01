@@ -283,13 +283,13 @@ const Home = () => {
             </Container>
         </div>
         <div className="ltn__brand-logo-area  ltn__brand-logo-1 section-bg-1 pt-35 pb-35 plr--5">
-            <Container fluid>
+            <Container fluid={true}>
                 <Row className="ltn__brand-logo-active">
                     {productsData.slice(0,6).map((val, index) => {
                         return (
                             <Col key={index}>
                                 <div className="ltn__brand-logo-item">
-                                    <Image src={value.thumbnail} alt="Brand Logo" />
+                                    <Image src={val.thumbnail} alt="Brand Logo" />
                                 </div>
                             </Col>
                         )
