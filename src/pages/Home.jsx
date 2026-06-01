@@ -4,6 +4,21 @@ import Slider from "react-slick";
 import HomeCarousel from "../components/HomeCarousel";
 import { Link } from "react-router-dom";
 import { Heart, Search } from "react-bootstrap-icons";
+import featureItem1 from './../assets/icons/feature-items/1.png'
+import featureItem2 from './../assets/icons/feature-items/2.png'
+import featureItem3 from './../assets/icons/feature-items/3.png'
+import featureItem4 from './../assets/icons/feature-items/4.png'
+import bannerImage1 from './../assets/images/banner-area/banner-area-img-1.jpg'
+import bannerImage2 from './../assets/images/banner-area/banner-area-img-2.jpg'
+import bannerImage3 from './../assets/images/banner-area/banner-area-img-3.jpg'
+import bannerImage4 from './../assets/images/banner-area/banner-area-img-4.jpg'
+import bannerImage5 from './../assets/images/banner-area/banner-area-img-5.jpg'
+import brandLogo1 from './../assets/images/brand-logo/1.png'
+import brandLogo2 from './../assets/images/brand-logo/2.png'
+import brandLogo3 from './../assets/images/brand-logo/3.png'
+import brandLogo4 from './../assets/images/brand-logo/4.png'
+import brandLogo5 from './../assets/images/brand-logo/5.png'
+import brandLogo6 from './../assets/images/brand-logo/6.png'
 
 
 const Home = () => {
@@ -18,7 +33,7 @@ const Home = () => {
 
     }, [])
     return (<>
-        <HomeCarousel />
+        <HomeCarousel carouselData={productsData} />
         <div className="ltn__feature-area mt-100 mt--65" >
             <Container>
                 <Row>
@@ -26,7 +41,7 @@ const Home = () => {
                         <div className="ltn__feature-item-box-wrap ltn__feature-item-box-wrap-2 z-1 ltn__border section-bg-6 position-relative">
                             <div className="ltn__feature-item ltn__feature-item-8">
                                 <div className="ltn__feature-icon">
-                                    <Image src="img/icons/svg/8-trolley.svg" alt="#" />
+                                    <Image src={featureItem1} alt="#" />
                                 </div>
                                 <div className="ltn__feature-info">
                                     <h4>Free shipping</h4>
@@ -35,7 +50,7 @@ const Home = () => {
                             </div>
                             <div className="ltn__feature-item ltn__feature-item-8">
                                 <div className="ltn__feature-icon">
-                                    <Image src="img/icons/svg/9-money.svg" alt="#" />
+                                    <Image src={featureItem2} alt="#" />
                                 </div>
                                 <div className="ltn__feature-info">
                                     <h4>15 days returns</h4>
@@ -44,7 +59,7 @@ const Home = () => {
                             </div>
                             <div className="ltn__feature-item ltn__feature-item-8">
                                 <div className="ltn__feature-icon">
-                                    <Image src="img/icons/svg/10-credit-card.svg" alt="#" />
+                                    <Image src={featureItem3} alt="#" />
                                 </div>
                                 <div className="ltn__feature-info">
                                     <h4>Secure checkout</h4>
@@ -53,7 +68,7 @@ const Home = () => {
                             </div>
                             <div className="ltn__feature-item ltn__feature-item-8">
                                 <div className="ltn__feature-icon">
-                                    <Image src="img/icons/svg/11-gift-card.svg" alt="#" />
+                                    <Image src={featureItem4} alt="#" />
                                 </div>
                                 <div className="ltn__feature-info">
                                     <h4>Offer & gift here</h4>
@@ -71,21 +86,21 @@ const Home = () => {
                     <Col lg={4} md={6}>
                         <div className="ltn__banner-item">
                             <div className="ltn__banner-img">
-                                <Link href="/shop"><Image src="img/banner/1.jpg" alt="Banner Image" /></Link>
+                                <Link href="/shop"><Image src={bannerImage1} alt="Banner Image" /></Link>
                             </div>
                         </div>
                     </Col>
                     <Col lg={4} md={6}>
                         <div className="ltn__banner-item">
                             <div className="ltn__banner-img">
-                                <Link href="/shop"><Image src="img/banner/2.jpg" alt="Banner Image" /></Link>
+                                <Link href="/shop"><Image src={bannerImage2} alt="Banner Image" /></Link>
                             </div>
                         </div>
                     </Col>
                     <Col lg={4} md={6}>
                         <div className="ltn__banner-item">
                             <div className="ltn__banner-img">
-                                <Link href="/shop"><Image src="img/banner/3.jpg" alt="Banner Image" /></Link>
+                                <Link href="/shop"><Image src={bannerImage3} alt="Banner Image" /></Link>
                             </div>
                         </div>
                     </Col>
@@ -157,14 +172,14 @@ const Home = () => {
                     <Col md={6}>
                         <div className="ltn__banner-item">
                             <div className="ltn__banner-img">
-                                <Link to="/shop"><Image src="img/banner/6.jpg" alt="Banner Image" /></Link>
+                                <Link to="/shop"><Image src={bannerImage4} alt="Banner Image" /></Link>
                             </div>
                         </div>
                     </Col>
                     <Col md={6}>
                         <div className="ltn__banner-item">
                             <div className="ltn__banner-img">
-                                <Link to="/shop"><Image src="img/banner/7.jpg" alt="Banner Image" /></Link>
+                                <Link to="/shop"><Image src={bannerImage5} alt="Banner Image" /></Link>
                             </div>
                         </div>
                     </Col>
@@ -285,11 +300,11 @@ const Home = () => {
         <div className="ltn__brand-logo-area  ltn__brand-logo-1 section-bg-1 pt-35 pb-35 plr--5">
             <Container fluid={true}>
                 <Row className="ltn__brand-logo-active">
-                    {productsData.slice(0,6).map((val, index) => {
+                    {[brandLogo1,brandLogo2,brandLogo3,brandLogo4,brandLogo5,brandLogo6].map((val, index) => {
                         return (
                             <Col key={index}>
                                 <div className="ltn__brand-logo-item">
-                                    <Image src={val.thumbnail} alt="Brand Logo" />
+                                    <Image src={val} alt="Brand Logo" />
                                 </div>
                             </Col>
                         )
