@@ -3,7 +3,7 @@ import { Col, Container, Image, Row } from "react-bootstrap";
 import Slider from "react-slick";
 import HomeCarousel from "../components/HomeCarousel";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ArrowLeftSquare, ArrowRightSquare, Heart, Search } from "react-bootstrap-icons";
+import { ArrowLeft, ArrowRight, ArrowLeftSquare, ArrowRightSquare, ChatLeftText, Heart, Search } from "react-bootstrap-icons";
 import featureItem1 from './../assets/icons/feature-items/1.png'
 import featureItem2 from './../assets/icons/feature-items/2.png'
 import featureItem3 from './../assets/icons/feature-items/3.png'
@@ -13,6 +13,7 @@ import bannerImage2 from './../assets/images/banner-area/banner-area-img-2.jpg'
 import bannerImage3 from './../assets/images/banner-area/banner-area-img-3.jpg'
 import bannerImage4 from './../assets/images/banner-area/banner-area-img-4.jpg'
 import bannerImage5 from './../assets/images/banner-area/banner-area-img-5.jpg'
+import bannerImage6 from './../assets/images/banner-area/banner-area-img-6.jpg'
 import brandLogo1 from './../assets/images/brand-logo/1.png'
 import brandLogo2 from './../assets/images/brand-logo/2.png'
 import brandLogo3 from './../assets/images/brand-logo/3.png'
@@ -33,8 +34,6 @@ const Home = () => {
             .then((data) => {
                 setProductsData(data.products);
             })
-
-
     }, [])
     return (<>
         <HomeCarousel carouselData={productsData} />
@@ -190,7 +189,6 @@ const Home = () => {
                 </Row>
             </Container>
         </div>
-        {/* incompleted section */}
         <div className="ltn__product-slider-area ltn__product-gutter  pt-60 pb-40">
             <Container>
                 <Row >
@@ -200,9 +198,9 @@ const Home = () => {
                         </div>
                     </Col>
                 </Row>
-                <div className="ltn__product-slider-item-four-active slick-arrow-1">
-                   
-                    
+                <div className="ltn__product-slider-item-four-active slick-arrow-1 slick-slide-arrow-1">
+
+
                     <Swiper
                         modules={[Navigation]}
                         navigation={{
@@ -211,7 +209,8 @@ const Home = () => {
                         }}
                         spaceBetween={20}
                         slidesPerView={4}
-                    ><div className="custom-prev slick-arrow"><ArrowLeft/></div>
+                        loop={true}
+                    ><div className="custom-prev slick-arrow"><ArrowLeft /></div>
                         {productsData.map((value, index) => (
                             <SwiperSlide key={index}>
                                 <div className="ltn__product-item text-center">
@@ -252,9 +251,9 @@ const Home = () => {
                                     </div>
                                 </div>
                             </SwiperSlide>
-                        ))}<div className="custom-next slick-arrow slick-next"><ArrowRight/></div>
+                        ))}<div className="custom-next slick-arrow slick-next"><ArrowRight /></div>
                     </Swiper>
-                    
+
 
 
 
@@ -268,7 +267,7 @@ const Home = () => {
                     <Col md={12}>
                         <div className="ltn__banner-item">
                             <div className="ltn__banner-img">
-                                <Link to="/shop"><Image src="img/banner/10.jpg" alt="Banner Image" /></Link>
+                                <Link to="/shop"><Image src={bannerImage6} alt="Banner Image" /></Link>
                             </div>
                         </div>
                     </Col>
@@ -276,7 +275,6 @@ const Home = () => {
             </Container>
 
         </div >
-        {/* incompleted section */}
         <div className="ltn__blog-area  pt-60 pb-30">
             <Container>
                 <Row>
@@ -286,31 +284,59 @@ const Home = () => {
                         </div>
                     </Col>
                 </Row>
-                <Row className="ltn__blog-slider-one-active slick-arrow-1">
+                <Row className="ltn__blog-slider-one-active slick-arrow-1 slick-slide-arrow-1">
                     <Col lg={12}>
-                        <div className="ltn__blog-item">
-                            <div className="ltn__blog-img">
-                                <Link to="/blog-details"><Image src="img/blog/1.jpg" alt="#" /></Link>
-                            </div>
-                            <div className="ltn__blog-brief">
-                                <div className="ltn__blog-meta">
-                                    <ul>
-                                        <li className="ltn__blog-author d-none">
-                                            <a href="#">by: Admin</a>
-                                        </li>
-                                        <li>
-                                            <span> Nov 18, 2020</span>
-                                        </li>
-                                        <li className="ltn__blog-comment">
-                                            <a href="#"><i className="icon-speech"></i> 2</a>
-                                        </li>
-                                    </ul>
+                        <Swiper
+                            modules={[Navigation]}
+                            navigation={{
+                                prevEl: ".custom-prev",
+                                nextEl: ".custom-next"
+                            }}
+                            spaceBetween={20}
+                            slidesPerView={4}
+                            
+                            breakpoints={{
+                                0: {
+                                    slidesPerView: 1,
+                                },
+                                768: {
+                                    slidesPerView: 2,
+                                },
+                                992: {
+                                    slidesPerView: 3,
+                                },
+                            }}
+                            loop={true}
+                        ><div className="custom-prev slick-arrow"><ArrowLeft /></div>
+                        {productsData.slice(20,25).map((value,index)=>{
+                            return(
+                                <SwiperSlide key={index}>
+                            <div className="ltn__blog-item">
+                                <div className="ltn__blog-img">
+                                    <Link to="/blog-details"><Image src={value.images} alt="#" /></Link>
                                 </div>
-                                <h3 className="ltn__blog-title blog-title-line"><Link to="/blog-details">Lorem ipsum dolor sit amet con adipisicing elit sed </Link></h3>
-                            </div>
-                        </div>
+                                <div className="ltn__blog-brief">
+                                    <div className="ltn__blog-meta">
+                                        <ul>
+                                            <li>
+                                                <span> Nov 18, 2020</span>
+                                            </li>
+                                            <li className="ltn__blog-comment">
+                                                <Link to="/"><ChatLeftText /> 2</Link>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <h3 className="ltn__blog-title blog-title-line"><Link to="/blog-details">Lorem ipsum dolor sit amet con adipisicing elit sed </Link></h3>
+                                </div>
+                            </div></SwiperSlide>
+                            )
+                        }) }
+
+                            <div className="custom-next slick-arrow slick-next"><ArrowRight /></div>
+                        </Swiper>
                     </Col>
                 </Row>
+
             </Container>
         </div>
         <div className="ltn__brand-logo-area  ltn__brand-logo-1 section-bg-1 pt-35 pb-35 plr--5">
