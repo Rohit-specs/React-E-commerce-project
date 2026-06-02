@@ -3,7 +3,7 @@ import { Col, Container, Image, Row } from "react-bootstrap";
 import Slider from "react-slick";
 import HomeCarousel from "../components/HomeCarousel";
 import { Link } from "react-router-dom";
-import { Heart, Search } from "react-bootstrap-icons";
+import { ArrowLeft, ArrowLeftSquare, ArrowRightSquare, Heart, Search } from "react-bootstrap-icons";
 import featureItem1 from './../assets/icons/feature-items/1.png'
 import featureItem2 from './../assets/icons/feature-items/2.png'
 import featureItem3 from './../assets/icons/feature-items/3.png'
@@ -19,7 +19,11 @@ import brandLogo3 from './../assets/images/brand-logo/3.png'
 import brandLogo4 from './../assets/images/brand-logo/4.png'
 import brandLogo5 from './../assets/images/brand-logo/5.png'
 import brandLogo6 from './../assets/images/brand-logo/6.png'
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
 
+import "swiper/css";
+import "swiper/css/navigation";
 
 const Home = () => {
     const [productsData, setProductsData] = useState([])
@@ -196,11 +200,20 @@ const Home = () => {
                         </div>
                     </Col>
                 </Row>
-                <Row className="ltn__product-slider-item-four-active slick-arrow-1">
-                    {productsData.map((value, index) => {
-                        return (
-                            <Col xs={12} key={index}>
-
+                <div className="ltn__product-slider-item-four-active slick-arrow-1">
+                   
+                    
+                    <Swiper
+                        modules={[Navigation]}
+                        navigation={{
+                            prevEl: ".custom-prev",
+                            nextEl: ".custom-next"
+                        }}
+                        spaceBetween={20}
+                        slidesPerView={4}
+                    ><div className="custom-prev slick-arrow"><ArrowLeft/></div>
+                        {productsData.map((value, index) => (
+                            <SwiperSlide key={index}>
                                 <div className="ltn__product-item text-center">
                                     <div className="product-img">
                                         <Link to="/shop"><Image src={value.images} alt="#" /></Link>
@@ -238,14 +251,17 @@ const Home = () => {
                                         </div>
                                     </div>
                                 </div>
-                            </Col>
-                        )
-                    })}
+                            </SwiperSlide>
+                        ))}<div className="custom-next slick-arrow slick-next"><ArrowRight/></div>
+                    </Swiper>
+                    
 
 
-                </Row>
+
+                </div>
             </Container>
         </div>
+
         <div className="ltn__banner-area ">
             <Container>
                 <Row>
@@ -300,7 +316,7 @@ const Home = () => {
         <div className="ltn__brand-logo-area  ltn__brand-logo-1 section-bg-1 pt-35 pb-35 plr--5">
             <Container fluid={true}>
                 <Row className="ltn__brand-logo-active">
-                    {[brandLogo1,brandLogo2,brandLogo3,brandLogo4,brandLogo5,brandLogo6].map((val, index) => {
+                    {[brandLogo1, brandLogo2, brandLogo3, brandLogo4, brandLogo5, brandLogo6].map((val, index) => {
                         return (
                             <Col key={index}>
                                 <div className="ltn__brand-logo-item">
