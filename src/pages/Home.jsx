@@ -35,7 +35,8 @@ const Home = () => {
                 setProductsData(data.products);
             })
     }, [])
-    return (<>
+    return (
+    <>
         <HomeCarousel carouselData={productsData} />
         <div className="ltn__feature-area mt-100 mt--65" >
             <Container>
@@ -260,7 +261,6 @@ const Home = () => {
                 </div>
             </Container>
         </div>
-
         <div className="ltn__banner-area ">
             <Container>
                 <Row>
