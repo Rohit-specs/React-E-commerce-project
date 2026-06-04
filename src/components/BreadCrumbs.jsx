@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Container, Row, Col, Breadcrumb } from "react-bootstrap";
+import { Container, Row, Col, Breadcrumb, Nav } from "react-bootstrap";
 import { ChevronRight } from "react-bootstrap-icons";
 
 const BreadCrumbs = () => {
@@ -12,15 +12,18 @@ const BreadCrumbs = () => {
         .replace(/\b\w/g, (c) => c.toUpperCase());
 
     return (
-        <div class="ltn__breadcrumb-area ltn__breadcrumb-area-4 ltn__breadcrumb-color-white---">
+        <div className="ltn__breadcrumb-area ltn__breadcrumb-area-4 ltn__breadcrumb-color-white---">
             <Container>
                 <Row>
                     <Col lg={12}>
-                        <div class="ltn__breadcrumb-inner text-center">
-                            <h1 class="ltn__page-title"> {pageTitle}</h1>
-                            <div class="ltn__breadcrumb-list mx-auto">
+                        <div className="ltn__breadcrumb-inner text-center">
+                            <h1 className="ltn__page-title"> {pageTitle}</h1>
+                            <div className="ltn__breadcrumb-list mx-auto">
                                 <Breadcrumb className="text-center">
-                                    <Breadcrumb.Item><Link to="/">Home</Link></Breadcrumb.Item>
+                                    <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/" }}>
+                                        Home
+                                    </Breadcrumb.Item>
+
                                     {segments.map((segment, index) => {
                                         const path =
                                             "/" + segments.slice(0, index + 1).join("/");
