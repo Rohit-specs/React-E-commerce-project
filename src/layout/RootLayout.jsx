@@ -1,7 +1,14 @@
 import { Button, Col, Container, Form, Image, Row } from "react-bootstrap";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { Cart, Envelope, Facebook, Heart, Instagram, Person, Phone, Pin, Search, Twitter } from "react-bootstrap-icons";
+import brandLogo1 from './../assets/images/brand-logo/1.png'
+import brandLogo2 from './../assets/images/brand-logo/2.png'
+import brandLogo3 from './../assets/images/brand-logo/3.png'
+import brandLogo4 from './../assets/images/brand-logo/4.png'
+import brandLogo5 from './../assets/images/brand-logo/5.png'
+import brandLogo6 from './../assets/images/brand-logo/6.png'
 import payment_image_6 from './../assets/images/payment-6.png';
+import fiamaLogo from './../assets/logo/logo.png';
 const RootLayout = () => {
   return (
     <>
@@ -12,7 +19,7 @@ const RootLayout = () => {
               <Col>
                 <div className="site-logo">
                   <NavLink to="/">
-                    <Image src="img/logo.png" alt="Logo" />
+                    <Image src={fiamaLogo} alt="Logo" />
                   </NavLink>
                 </div>
               </Col>
@@ -236,6 +243,23 @@ const RootLayout = () => {
       </header>
       <main>
         <Outlet />
+        <div className="ltn__brand-logo-area  ltn__brand-logo-1 section-bg-1 pt-35 pb-35 plr--5">
+                <Container fluid={true}>
+                    <Row className="ltn__brand-logo-active">
+                        {[brandLogo1, brandLogo2, brandLogo3, brandLogo4, brandLogo5, brandLogo6].map((val, index) => {
+                            return (
+                                <Col key={index}>
+                                    <div className="ltn__brand-logo-item">
+                                        <Image src={val} alt="Brand Logo" />
+                                    </div>
+                                </Col>
+                            )
+                        })}
+
+
+                    </Row>
+                </Container>
+            </div>
       </main>
       <footer className="ltn__footer-area ">
         <div className="footer-top-area  section-bg-5">

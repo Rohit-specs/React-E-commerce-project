@@ -14,12 +14,6 @@ import bannerImage3 from './../assets/images/banner-area/banner-area-img-3.jpg'
 import bannerImage4 from './../assets/images/banner-area/banner-area-img-4.jpg'
 import bannerImage5 from './../assets/images/banner-area/banner-area-img-5.jpg'
 import bannerImage6 from './../assets/images/banner-area/banner-area-img-6.jpg'
-import brandLogo1 from './../assets/images/brand-logo/1.png'
-import brandLogo2 from './../assets/images/brand-logo/2.png'
-import brandLogo3 from './../assets/images/brand-logo/3.png'
-import brandLogo4 from './../assets/images/brand-logo/4.png'
-import brandLogo5 from './../assets/images/brand-logo/5.png'
-import brandLogo6 from './../assets/images/brand-logo/6.png'
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 
@@ -28,8 +22,6 @@ import "swiper/css/navigation";
 
 const Home = () => {
     const [productsData, setProductsData] = useState([])
-    // axios.get('https://dummyjson.com/products')
-    // .then(res=>setproductsData(res.data.products))
     useEffect(() => {
         fetch('https://dummyjson.com/products')
             .then((res) => res.json())
@@ -157,7 +149,7 @@ const Home = () => {
                                             </div>
                                         </div>
                                         <div className="product-info">
-                                            <h2 className="product-title"><a href="product-details.html">Pink Flower Tree</a></h2>
+                                            <h2 className="product-title"><a href="product-details.html">{value.title}</a></h2>
                                             <div className="product-price">
                                                 <span>${value.price}</span>
                                                 <del>${(value.price / (1 - (value.discountPercentage / 100))).toFixed(2)}</del>
@@ -353,23 +345,7 @@ const Home = () => {
 
                 </Container>
             </div>
-            <div className="ltn__brand-logo-area  ltn__brand-logo-1 section-bg-1 pt-35 pb-35 plr--5">
-                <Container fluid={true}>
-                    <Row className="ltn__brand-logo-active">
-                        {[brandLogo1, brandLogo2, brandLogo3, brandLogo4, brandLogo5, brandLogo6].map((val, index) => {
-                            return (
-                                <Col key={index}>
-                                    <div className="ltn__brand-logo-item">
-                                        <Image src={val} alt="Brand Logo" />
-                                    </div>
-                                </Col>
-                            )
-                        })}
-
-
-                    </Row>
-                </Container>
-            </div>
+            
         </>
     )
 }
