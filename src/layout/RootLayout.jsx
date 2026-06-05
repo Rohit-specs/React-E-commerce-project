@@ -126,8 +126,8 @@ const RootLayout = () => {
 
                             <ul>
                               <li><NavLink to="/login">Sign In</NavLink></li>
-                              <li><NavLink to="/register">Register</NavLink></li>
-                              <li><NavLink to="/account">My Account</NavLink></li>
+                              <li><NavLink to="/signup">Register</NavLink></li>
+                              <li><NavLink to="/my-account">My Account</NavLink></li>
                               <li><NavLink to="/wishlist">Wishlist</NavLink></li>
                             </ul>
                           </li>

@@ -7,6 +7,9 @@ import ProductDetails from '../pages/ProductDetails'
 import Cart from '../pages/Cart'
 import Wishlist from '../pages/Wishlist'
 import Checkout from '../pages/Checkout'
+import Login from '../pages/Login'
+import Signup from '../pages/Signup'
+import MyAccount from '../pages/MyAccount'
 
 export const MainRoutes = createBrowserRouter([
     // {path:"*",element:},
@@ -19,6 +22,9 @@ export const MainRoutes = createBrowserRouter([
             {path:"/cart",element:<Cart/>},
             {path:"/wishlist",element:<Wishlist/>},
             {path:"/checkout",element:<Checkout/>},
+            {path:"/login",element:<Login/>},
+            {path:"/signup",element:<Signup/>},
+            {path:"/my-account",element:<MyAccount/>},
 
         ]
     }

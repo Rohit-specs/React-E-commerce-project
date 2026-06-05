@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Carousel, Col, Container, Image, Row } from "react-bootstrap";
 import { Link } from 'react-router-dom';
-import sliderImage from './../assets/images/slider/1.jpg'
+import sliderImage from './../assets/images/homeCarouselbg-1.jpg'
 const HomeCarousel = ({carouselData}) => {
     // const carouselData = [
     //     {
@@ -248,7 +248,7 @@ const HomeCarousel = ({carouselData}) => {
     return (
         <Carousel fade={true} indicators={false} activeIndex={index} onSelect={(selectedIndex) => setIndex(selectedIndex)}>
             {carouselData.slice(0,4).map((sliderData, i) => {
-                const { title, description } = { ...sliderData }
+                const { title, description ,category} = { ...sliderData }
                 return (
                     <Carousel.Item key={i}>
 
@@ -259,7 +259,7 @@ const HomeCarousel = ({carouselData}) => {
                                     backgroundPosition: "center",
                                 }}>
                                 <div className="ltn__slide-item ltn__slide-item-8 text-color-white---- bg-image bg-overlay-theme-black-80---">
-                                    <div className="ltn__slide-item-inner">
+                                   
                                         <Container>
                                             <Row>
                                                 <Col lg="12" className="align-self-start">
@@ -268,7 +268,7 @@ const HomeCarousel = ({carouselData}) => {
                                                             <div className="slide-item-info">
 
                                                                 <div className="slide-item-info-inner ltn__slide-animation">
-                                                                    <h1 className="slide-title animated ">Fresh Flowers</h1>
+                                                                    <h1 className="slide-title animated ">{category}</h1>
                                                                     <h6 className="slide-sub-title ltn__body-color slide-title-line animated">{title}</h6>
                                                                     <div className="slide-brief animated">
                                                                         <p>{description}</p>
@@ -283,7 +283,7 @@ const HomeCarousel = ({carouselData}) => {
                                                 </Col>
                                             </Row>
                                         </Container>
-                                    </div>
+                                    
                                 </div>
                             </div>
 

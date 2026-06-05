@@ -65,7 +65,7 @@ const Shop = () => {
                 <div className="tab-pane fade active show" id="liton_product_grid">
                   <div className="ltn__product-tab-content-inner ltn__product-grid-view">
                     <Row>
-                      {productsData.map((val) => {
+                      {productsData?.map((val) => {
                         return (<Col key={val.id} xl={4} sm={6} xs={12}>
                           <div className="ltn__product-item text-center">
                             <div className="product-img">
@@ -127,12 +127,6 @@ const Shop = () => {
             </Col>
             <Col lg={3} className="mb-100">
               <aside className="sidebar ltn__shop-sidebar">
-                <div className="widget ltn__search-widget">
-                  <Form action="#">
-                    <Form.Control type="text" name="search" placeholder="Search your keyword..." />
-                    <Button type="submit"><Search /></Button>
-                  </Form>
-                </div>
                 <div className="widget ltn__price-filter-widget">
                   <h4 className="ltn__widget-title">Price</h4>
                   <div className="price_filter">

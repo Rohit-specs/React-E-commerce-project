@@ -19,15 +19,21 @@ import { Navigation } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/navigation";
+import { getAllProducts } from "../api/services";
 
 const Home = () => {
     const [productsData, setProductsData] = useState([])
     useEffect(() => {
-        fetch('https://dummyjson.com/products')
-            .then((res) => res.json())
-            .then((data) => {
-                setProductsData(data.products);
-            })
+       const fetchData = async () => {
+             try {
+               const res = await getAllProducts()
+               setProductsData(res.data.products)
+             } catch (error) {
+               console.log(error)
+             }
+           };
+       
+           fetchData();
     }, [])
     return (
         <>
