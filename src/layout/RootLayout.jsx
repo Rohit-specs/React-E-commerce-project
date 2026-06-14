@@ -9,9 +9,21 @@ import brandLogo5 from './../assets/images/brand-logo/5.png'
 import brandLogo6 from './../assets/images/brand-logo/6.png'
 import payment_image_6 from './../assets/images/payment-6.png';
 import fiamaLogo from './../assets/logo/logo.png';
+import { useEffect, useState } from "react";
+import ScrollToTop from "../components/ScrollToTop";
+import { useSelector } from "react-redux";
 const RootLayout = () => {
+  const wishlistCount = useSelector(
+    (state) => state.wishlist?.wishlistItems?.length || 0
+  );
+  const cartCount = useSelector(
+    (state) => state.cart?.cartItems?.length || 0
+  );
+  const cartTotal = useSelector((state) =>  state.cart?.cartTotal || 0);
+
   return (
     <>
+      <ScrollToTop />
       <header className="ltn__header-area ltn__header-3 section-bg-6">
         <div className="ltn__header-middle-area">
           <Container>
@@ -134,28 +146,40 @@ const RootLayout = () => {
                         </ul>
                       </div>
                     </li>
-                    <li><Link className="my-auto mx-2">
-  <Heart/>
-</Link></li>
+                    <li>
+                      <Link to="/wishlist" className=" position-relative d-inline-block mini-cart-icon mini-cart-icon mini-cart-icon-2">
+                        <Heart size={22} className="mini-cart-icon" />
+
+                        {wishlistCount > 0 && (
+                          <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            {wishlistCount}
+                          </span>
+                        )}
+                      </Link>
+                    </li>
 
                     <li>
                       <div className="mini-cart-icon mini-cart-icon-2">
-                        
+
                         <Link
                           to="/cart"
-                          className="ltn__utilize-toggle"
+                          className="ltn__utilize-toggle gap-2"
                         >
-                          <span className="mini-cart-icon">
-                            <Cart/>
-                            <sup>2</sup>
+                          <span className="mini-cart-icon position-relative">
+                            <Cart size={22} />
+                            {cartCount > 0 && (
+                              <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                {cartCount}
+                              </span>
+                            )}
                           </span>
-
-                          <h6>
+                          {cartTotal > 0 && (<h6>
                             <span>Your Cart</span>{" "}
                             <span className="ltn__secondary-color">
-                              $89.25
+                              {cartTotal.toFixed(2)}
                             </span>
-                          </h6>
+                          </h6>)}
+
                         </Link>
                       </div>
                     </li>
@@ -213,24 +237,25 @@ const RootLayout = () => {
                           <NavLink to="/">Home</NavLink>
                         </li>
 
-                        <li className="menu-icon">
-                          <NavLink to="/pages">Pages</NavLink>
-                        </li>
+
 
                         <li className="menu-icon">
                           <NavLink to="/shop">Shop</NavLink>
                         </li>
 
                         <li className="menu-icon">
-                          <NavLink to="/portfolio">Portfolio</NavLink>
+                          <NavLink to={`/my-account`}>My Account</NavLink>
                         </li>
 
                         <li className="menu-icon">
-                          <NavLink to="/news">News</NavLink>
+                          <NavLink to="/checkout">Checkout</NavLink>
                         </li>
 
                         <li className="menu-icon">
-                          <NavLink to="/contact">Contact</NavLink>
+                          <NavLink to="/wishlist">wishlist</NavLink>
+                        </li>
+                        <li className="menu-icon">
+                          <NavLink to="/cart">Cart</NavLink>
                         </li>
                       </ul>
                     </div>
@@ -244,22 +269,22 @@ const RootLayout = () => {
       <main>
         <Outlet />
         <div className="ltn__brand-logo-area  ltn__brand-logo-1 section-bg-1 pt-35 pb-35 plr--5">
-                <Container fluid={true}>
-                    <Row className="ltn__brand-logo-active">
-                        {[brandLogo1, brandLogo2, brandLogo3, brandLogo4, brandLogo5, brandLogo6].map((val, index) => {
-                            return (
-                                <Col key={index}>
-                                    <div className="ltn__brand-logo-item">
-                                        <Image src={val} alt="Brand Logo" />
-                                    </div>
-                                </Col>
-                            )
-                        })}
+          <Container fluid={true}>
+            <Row className="ltn__brand-logo-active">
+              {[brandLogo1, brandLogo2, brandLogo3, brandLogo4, brandLogo5, brandLogo6].map((val, index) => {
+                return (
+                  <Col key={index}>
+                    <div className="ltn__brand-logo-item">
+                      <Image src={val} alt="Brand Logo" />
+                    </div>
+                  </Col>
+                )
+              })}
 
 
-                    </Row>
-                </Container>
-            </div>
+            </Row>
+          </Container>
+        </div>
       </main>
       <footer className="ltn__footer-area ">
         <div className="footer-top-area  section-bg-5">
@@ -334,7 +359,7 @@ const RootLayout = () => {
                     <ul>
                       <li>
                         <div className="footer-address-icon">
-                          <Pin/>
+                          <Pin />
                         </div>
                         <div className="footer-address-info">
                           <p>Brooklyn, New York, United States</p>
@@ -342,7 +367,7 @@ const RootLayout = () => {
                       </li>
                       <li>
                         <div className="footer-address-icon">
-                          <Phone/>
+                          <Phone />
                         </div>
                         <div className="footer-address-info">
                           <p><a href="tel:+0123-456789">+0123-456789</a></p>
@@ -350,7 +375,7 @@ const RootLayout = () => {
                       </li>
                       <li>
                         <div className="footer-address-icon">
-                          <Envelope/>
+                          <Envelope />
                         </div>
                         <div className="footer-address-info">
                           <p><a href="mailto:example@example.com">example@example.com</a></p>
