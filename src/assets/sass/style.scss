@@ -28,3 +28,22 @@
 
 @import "./../../../node_modules/bootstrap/scss/bootstrap.scss";
 
+.active-category{
+    color: --ltn__secondary-color;
+}
+.active-category:active{
+    color: --ltn__secondary-color;
+}
+// .text-color-secondary{
+//     color: --ltn__secondary-color ; 
+// }
+.text-color-secondary{
+    color: --ltn__secondary-color !important; 
+    &:active{
+        color: white!important;
+    }
+}
+.bg-custom-secondary{
+    background-color: --ltn__secondary-color !important; 
+}
+
