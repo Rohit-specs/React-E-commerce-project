@@ -2,6 +2,7 @@ import { Container, Row, Col, Form, Button, Table, Image, Accordion } from "reac
 import BreadCrumbs from '../components/BreadCrumbs'
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { Paypal } from "react-bootstrap-icons";
 
 const Checkout = () => {
   const [selectedPayment, setSelectedPayment] = useState("cod");
@@ -35,7 +36,7 @@ const Checkout = () => {
                       <Form>
                         <Row>
                           <Col md={6}>
-                            <div className="input-item input-item-name ltn__custom-icon">
+                            <div className="input-item input-item-name">
                               <Form.Control
                                 type="text"
                                 name="ltn__name"
@@ -45,7 +46,7 @@ const Checkout = () => {
                           </Col>
 
                           <Col md={6}>
-                            <div className="input-item input-item-email ltn__custom-icon">
+                            <div className="input-item input-item-email">
                               <Form.Control
                                 type="email"
                                 name="ltn__email"
@@ -89,32 +90,32 @@ const Checkout = () => {
                       <h6>Personal Information</h6>
                       <div class="row">
                         <div class="col-md-6">
-                          <div class="input-item input-item-name ltn__custom-icon">
+                          <div class="input-item input-item-name">
                             <Form.Control type="text" name="ltn__name" placeholder="First name" />
                           </div>
                         </div>
                         <div class="col-md-6">
-                          <div class="input-item input-item-name ltn__custom-icon">
+                          <div class="input-item input-item-name">
                             <Form.Control type="text" name="ltn__lastname" placeholder="Last name" />
                           </div>
                         </div>
                         <div class="col-md-6">
-                          <div class="input-item input-item-email ltn__custom-icon">
+                          <div class="input-item input-item-email">
                             <Form.Control type="email" name="ltn__email" placeholder="email address" />
                           </div>
                         </div>
                         <div class="col-md-6">
-                          <div class="input-item input-item-phone ltn__custom-icon">
+                          <div class="input-item input-item-phone">
                             <Form.Control type="text" name="ltn__phone" placeholder="phone number" />
                           </div>
                         </div>
                         <div class="col-md-6">
-                          <div class="input-item input-item-website ltn__custom-icon">
+                          <div class="input-item input-item-website">
                             <Form.Control type="text" name="ltn__company" placeholder="Company name (optional)" />
                           </div>
                         </div>
                         <div class="col-md-6">
-                          <div class="input-item input-item-website ltn__custom-icon">
+                          <div class="input-item input-item-website">
                             <Form.Control type="text" name="ltn__phone" placeholder="Company address (optional)" />
                           </div>
                         </div>
@@ -175,7 +176,7 @@ const Checkout = () => {
                         </label>
                       </p>
                       <h6>Order Notes (optional)</h6>
-                      <div class="input-item input-item-textarea ltn__custom-icon">
+                      <div class="input-item input-item-textarea">
                         <Form.Control
                           as="textarea"
                           rows={4}
@@ -261,10 +262,7 @@ const Checkout = () => {
 
                       <span className="me-2">PayPal</span>
 
-                      <Image
-                        src="img/icons/payment-3.png"
-                        alt="paypal"
-                      />
+                      <Paypal/>
                     </div>
 
                     <Accordion.Body>

@@ -1,304 +1,251 @@
-import BreadCrumbs from '../components/BreadCrumbs'
 import { useState } from "react";
-import { Container, Row, Col, Table, Form, Button, Image, } from "react-bootstrap";
+import BreadCrumbs from "../components/BreadCrumbs";
+import { Container, Row, Col, Table, Form, Button, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { removeFromCart, updateQuantity, applyCoupon, increament, decrement } from "../store/slices/CartSlice";
+import { toast } from "react-toastify";
+
 const Cart = () => {
-    const [cartItems, setCartItems] = useState([
-        {
-            id: 1,
-            title: "Brake Conversion Kit",
-            image: "img/product/1.png",
-            price: 149,
-            quantity: 2,
-        },
-        {
-            id: 2,
-            title: "OE Replica Wheels",
-            image: "img/product/2.png",
-            price: 85,
-            quantity: 2,
-        },
-        {
-            id: 3,
-            title: "Wheel Bearing Retainer",
-            image: "img/product/3.png",
-            price: 75,
-            quantity: 2,
-        },
-    ]);
-    const subtotal = cartItems.reduce(
-        (total, item) => total + item.price * item.quantity,
-        0
-    );
+  const dispatch = useDispatch();
 
-    const shipping = 15;
-    const total = subtotal + shipping;
-    return (
-        <>
-            <BreadCrumbs />
-            {/* <div className="liton__shoping-cart-area mb-100">
-                <Container>
-                    <Row>
-                        <Col lg={12}>
-                            <div className="shoping-cart-inner">
-                                <div className="shoping-cart-table">
-                                    <Table responsive>
-                                        <tbody>
-                                            {cartItems.map((item) => (
-                                                <tr key={item.id}>
-                                                    <td
-                                                        className="cart-product-remove"
-                                                        style={{ cursor: "pointer" }}
-                                                        onClick={() => removeItem(item.id)}
-                                                    >
-                                                        ×
-                                                    </td>
+  const {
+    cartItems,
+    cartTotal,
+    shippingCost,
+    tax,
+    orderTotal,
+    discountPercent,
+    discoutAmount,
+  } = useSelector((state) => state.cart);
 
-                                                    <td className="cart-product-image">
-                                                        <Link to={`/product-details/${item.id}`}>
-                                                            <Image
-                                                                src={item.image}
-                                                                alt={item.title}
-                                                                width={80}
-                                                            />
-                                                        </Link>
-                                                    </td>
+  const [couponCode, setCouponCode] = useState("");
 
-                                                    <td className="cart-product-info">
-                                                        <h4>
-                                                            <Link to={`/product-details/${item.id}`}>
-                                                                {item.title}
-                                                            </Link>
-                                                        </h4>
-                                                    </td>
+  const handleApplyCoupon = () => {
+    dispatch(applyCoupon(couponCode));
 
-                                                    <td className="cart-product-price">
-                                                        ${item.price.toFixed(2)}
-                                                    </td>
+    if (
+      couponCode.toUpperCase() === "DIS5" ||
+      couponCode.toUpperCase() === "DIS10"
+    ) {
+      toast.success("Coupon applied successfully");
+    } else {
+      toast.error("Invalid coupon code");
+    }
+  };
 
-                                                    <td className="cart-product-quantity">
-                                                        <Form.Control
-                                                            type="number"
-                                                            min="1"
-                                                            defaultValue={item.quantity}
-                                                            style={{ width: "90px" }}
-                                                            onChange={(e) =>
-                                                                updateQuantity(
-                                                                    item.id,
-                                                                    e.target.value
-                                                                )
-                                                            }
-                                                        />
-                                                    </td>
+  return (
+    <>
+      <BreadCrumbs />
 
-                                                    <td className="cart-product-subtotal">
-                                                        $
-                                                        {(
-                                                            item.price * item.quantity
-                                                        ).toFixed(2)}
-                                                    </td>
-                                                </tr>
-                                            ))}
+      <div className="liton__shoping-cart-area mb-100">
+        <Container>
+          <Row>
+            <Col lg={12}>
+              <div className="shoping-cart-inner">
+                <div className="shoping-cart-table">
+                  {cartItems.length > 0 ? (
+                    <>
 
-                                            <tr className="cart-coupon-row">
-                                                <td colSpan={6}>
-                                                    <div className="d-flex gap-2">
-                                                        <Form.Control
-                                                            type="text"
-                                                            placeholder="Coupon code"
-                                                        />
+                      <Row className="cart-header d-none d-lg-flex fw-bold border-bottom pb-3 mb-3">
+                        <Col lg={1}></Col>
+                        <Col lg={2}>Image</Col>
+                        <Col lg={3}>Product</Col>
+                        <Col lg={2}>Price</Col>
+                        <Col lg={2}>Quantity</Col>
+                        <Col lg={2}>Subtotal</Col>
+                      </Row>
 
-                                                        <Button
-                                                            variant="success"
-                                                        >
-                                                            Apply Coupon
-                                                        </Button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </Table>
-                                </div>
+                      {cartItems.map((item) => (
+                        <Row
+                          key={item.id}
+                          className="cart-item align-items-center border-bottom py-3"
+                        >
+                          <Col lg={1} xs={12}>
+                            <span
+                              className="cart-product-remove"
+                              onClick={() => {
+                                dispatch(removeFromCart(item.id));
+                                toast.success("Item removed from cart");
+                              }}
+                            >
+                              x
+                            </span>
+                          </Col>
 
-                                <div className="shoping-cart-total mt-5">
-                                    <h4>Cart Totals</h4>
+                          <Col lg={2} xs={4}>
+                            <Link to={`/product-details/${item.id}`}>
+                              <Image
+                                src={item.thumbnail}
+                                alt={item.title}
+                                fluid
+                                className="cart-product-img"
+                              />
+                            </Link>
+                          </Col>
 
-                                    <Table>
-                                        <tbody>
-                                            <tr>
-                                                <td>Cart Subtotal</td>
-                                                <td>${subtotal.toFixed(2)}</td>
-                                            </tr>
+                          <Col lg={3} xs={8}>
+                            <h6 className="mb-0">
+                              <Link to={`/product-details/${item.id}`}>
+                                {item.title}
+                              </Link>
+                            </h6>
+                          </Col>
 
-                                            <tr>
-                                                <td>Shipping and Handling</td>
-                                                <td>${shipping.toFixed(2)}</td>
-                                            </tr>
+                          <Col lg={1} xs={6} className="mt-3 mt-lg-0">
+                            <span className="d-lg-none fw-bold">Price: </span>
+                            ${item.price}
+                          </Col>
 
-                                            <tr>
-                                                <td>VAT</td>
-                                                <td>$0.00</td>
-                                            </tr>
+                          <Col lg={3} xs={6} className="mt-3 mt-lg-0">
+                            <div className="quantity-box d-flex justify-content-center align-content-center ">
+                              <button
+                                type="button"
+                                className="flex-grow-1"
+                                onClick={() =>
+                                  dispatch(decrement({ id: item.id }))
+                                }
+                              >
+                                -
+                              </button>
 
-                                            <tr>
-                                                <td>
-                                                    <strong>Order Total</strong>
-                                                </td>
-                                                <td>
-                                                    <strong>
-                                                        ${total.toFixed(2)}
-                                                    </strong>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </Table>
+                              <Form.Control
+                                type="text"
+                                value={item.quantity}
+                                className="fs-4 text-center quantity-input h-100 w-50"
+                                onChange={(e) =>
+                                  dispatch(
+                                    updateQuantity({
+                                      id: item.id,
+                                      quantity: Number(e.target.value),
+                                    })
+                                  )
+                                }
+                              />
 
-                                    <div className="text-end">
-                                        <Button
-                                            as={Link}
-                                            to="/checkout"
-                                            variant="success"
-                                        >
-                                            Proceed to Checkout
-                                        </Button>
-                                    </div>
-                                </div>
+                              <button
+                                type="button"
+                                className="flex-grow-1"
+                                onClick={() =>
+                                  dispatch(increament({ id: item.id }))
+                                }
+                              >
+                                +
+                              </button>
                             </div>
+                          </Col>
+
+                          <Col lg={2} xs={12} className="mt-3 mt-lg-0">
+                            <span className="d-lg-none fw-bold">Subtotal: </span>
+                            ${(item.price * item.quantity).toFixed(2)}
+                          </Col>
+                        </Row>
+                      ))}
+
+                      <Row className="mt-4">
+                        <Col lg={3}>
+                          <div className="cart-coupon">
+                            <Form.Control
+                              type="text"
+                              name="quantity"
+
+                              placeholder="Coupon code"
+                              value={couponCode}
+                              onChange={(e) => setCouponCode(e.target.value)}
+                            />
+                          </div>
                         </Col>
-                    </Row>
-                </Container>
-            </div> */}
-            <div className="liton__shoping-cart-area mb-100">
-  <Container>
-    <Row>
-      <Col lg={12}>
-        <div className="shoping-cart-inner">
-          <div className="shoping-cart-table table-responsive">
-            <Table className="table">
-              <tbody>
-                {cartItems.map((item) => (
-                  <tr key={item.id}>
-                    <td
-                      className="cart-product-remove"
-                      onClick={() => removeItem(item.id)}
-                    >
-                      x
-                    </td>
 
-                    <td className="cart-product-image">
-                      <Link to={`/product-details/${item.id}`}>
-                        <Image src={item.image} alt={item.title} />
-                      </Link>
-                    </td>
+                        <Col lg={3} className="mt-3 mt-lg-0">
+                          <Button
 
-                    <td className="cart-product-info">
-                      <h4>
-                        <Link to={`/product-details/${item.id}`}>
-                          {item.title}
+                            className="theme-btn-2 btn-effect-2 w-100"
+                            onClick={handleApplyCoupon}
+
+                          >
+                            Apply Coupon
+                          </Button>
+                        </Col>
+                      </Row>
+                    </>
+                  ) : (
+                    <Row>
+                      <Col className="text-center py-5">
+                        <h4>Your Cart is Empty</h4>
+
+                        <Link to="/shop" className="btn theme-btn-1 mt-3">
+                          Continue Shopping
                         </Link>
-                      </h4>
-                    </td>
+                      </Col>
+                    </Row>
+                  )}
+                </div>
 
-                    <td className="cart-product-price">
-                      ${item.price}
-                    </td>
+                {cartItems.length > 0 && (
+                  <div className="shoping-cart-total mt-50">
+                    <h4>Cart Totals</h4>
 
-                    <td className="cart-product-quantity">
-                      <div className="cart-plus-minus">
-                        <Form.Control
-                          type="number"
-                          min={1}
-                          defaultValue={item.quantity}
-                          className="cart-plus-minus-box"
-                          onChange={(e) =>
-                            updateQuantity(
-                              item.id,
-                              e.target.value
-                            )
-                          }
-                        />
-                      </div>
-                    </td>
+                    <Table className="table">
+                      <tbody>
+                        <tr>
+                          <td>Cart Subtotal</td>
+                          <td>${cartTotal.toFixed(2)}</td>
+                        </tr>
 
-                    <td className="cart-product-subtotal">
-                      ${(item.price * item.quantity).toFixed(2)}
-                    </td>
-                  </tr>
-                ))}
+                        <tr>
+                          <td>Shipping and Handling</td>
+                          <td>${shippingCost.toFixed(2)}</td>
+                        </tr>
 
-                <tr className="cart-coupon-row">
-                  <td colSpan={12}>
-                    <div className="cart-coupon d-flex align-items-center">
-                      <Form.Control
-                        type="text"
-                        name="cart-coupon"
-                        placeholder="Coupon code"
-                      />
+                        <tr>
+                          <td>Discount ({discountPercent}%)</td>
+                          <td>
+                            -${discoutAmount.toFixed(2)}
+                          </td>
+                        </tr>
 
-                      <Button
-                        type="submit"
-                        className="btn theme-btn-2 btn-effect-2"
+                        <tr>
+                          <td>Tax ({tax}%)</td>
+                          <td>
+                            $
+                            {(
+                              ((cartTotal - discoutAmount) *
+                                tax) /
+                              100
+                            ).toFixed(2)}
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>
+                            <strong>Order Total</strong>
+                          </td>
+                          <td>
+                            <strong>
+                              ${orderTotal.toFixed(2)}
+                            </strong>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </Table>
+
+                    <div className="btn-wrapper text-right">
+                      <Link
+                        to="/checkout"
+                        className="theme-btn-1 btn btn-effect-1"
                       >
-                        Apply Coupon
-                      </Button>
+                        Proceed to Checkout
+                      </Link>
                     </div>
-                  </td>
+                  </div>
+                )}
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+    </>
+  );
+};
 
-                  
-                </tr>
-              </tbody>
-            </Table>
-          </div>
-
-          <div className="shoping-cart-total mt-50">
-            <h4>Cart Totals</h4>
-
-            <Table className="table">
-              <tbody>
-                <tr>
-                  <td>Cart Subtotal</td>
-                  <td>${subtotal.toFixed(2)}</td>
-                </tr>
-
-                <tr>
-                  <td>Shipping and Handing</td>
-                  <td>$15.00</td>
-                </tr>
-
-                <tr>
-                  <td>Vat</td>
-                  <td>$0.00</td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <strong>Order Total</strong>
-                  </td>
-                  <td>
-                    <strong>
-                      ${(subtotal + 15).toFixed(2)}
-                    </strong>
-                  </td>
-                </tr>
-              </tbody>
-            </Table>
-
-            <div className="btn-wrapper text-right">
-              <Link
-                to="/checkout"
-                className="theme-btn-1 btn btn-effect-1"
-              >
-                Proceed to checkout
-              </Link>
-            </div>
-          </div>
-        </div>
-      </Col>
-    </Row>
-  </Container>
-</div>
-        </>
-    )
-}
-
-export default Cart
+export default Cart;

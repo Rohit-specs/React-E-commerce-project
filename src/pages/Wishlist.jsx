@@ -2,90 +2,117 @@ import { Container, Row, Col, Table, Image } from "react-bootstrap";
 import BreadCrumbs from '../components/BreadCrumbs'
 import { Link } from 'react-router-dom'
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { removeFromWishlist } from "../store/slices/WishlistSlice";
+import { addToCart } from "../store/slices/CartSlice";
+import { toast } from "react-toastify";
 
 const Wishlist = () => {
-    const [wishlistItems, setWishlistItems] = useState([
-        {
-            id: 1,
-            title: "Essence Mascara Lash Princess",
-            thumbnail: "https://cdn.dummyjson.com/product-images/beauty/essence-mascara-lash-princess/1.webp",
-            price: 9.99,
-            stock: 99
-        },
-        {
-            id: 2,
-            title: "Eyeshadow Palette with Mirror",
-            thumbnail: "https://cdn.dummyjson.com/product-images/beauty/eyeshadow-palette-with-mirror/1.webp",
-            price: 19.99,
-            stock: 45
-        },
-        {
-            id: 3,
-            title: "Powder Canister",
-            thumbnail: "https://cdn.dummyjson.com/product-images/beauty/powder-canister/1.webp",
-            price: 14.99,
-            stock: 20
-        }
-    ]);
-    return (
-        <>
-            <BreadCrumbs />
-            <div class="liton__wishlist-area mb-85">
-                <Container>
-                    <Row>
-                        <Col lg={12}>
-                            <div class="shoping-cart-inner">
-                                <div class="shoping-cart-table table-responsive">
-                                    <Table class="table">
+  const { wishlistItems } = useSelector((state) => state.wishlist)
+  const dispatch = useDispatch()
+  const handleMoveToCart = (item) => {
+    dispatch(addToCart(item));
+    dispatch(removeFromWishlist(item.id));
+    toast.success("Product moved to cart");
+  };
+  return (
+    <>
+      <BreadCrumbs />
+      <div className="liton__wishlist-area mb-85">
+        <Container>
+          <Row>
+            <Col lg={12}>
+              <div className="shoping-cart-inner">
+                <div className="shoping-cart-table table-responsive">
 
-                                        <tbody>
-                                            {wishlistItems.map((item) => (
-                                                <tr key={item.id}>
-                                                    <td className="cart-product-remove">x</td>
+                  {wishlistItems.length === 0 ? (
+                    <div className="text-center py-5">
+                      <h3>Your Wishlist is Empty</h3>
+                      <p>Add some products to your wishlist and they will appear here.</p>
 
-                                                    <td className="cart-product-image">
-                                                        <Link to={`/product-details/${item.id}`}>
-                                                            <Image src={item.thumbnail} alt={item.title} />
-                                                        </Link>
-                                                    </td>
+                      <Link
+                        to="/shop"
+                        className="theme-btn-1 btn btn-effect-1 mt-3"
+                      >
+                        Continue Shopping
+                      </Link>
+                    </div>
+                  ) : (
+                    <Table className="table">
+                      <tbody>
+                        {wishlistItems.map((item) => (
+                          <tr key={item.id}>
+                            <td
+                              className="cart-product-remove"
+                              onClick={() =>
+                                dispatch(removeFromWishlist(item.id))
+                              }
+                              style={{ cursor: "pointer" }}
+                            >
+                              x
+                            </td>
 
-                                                    <td className="cart-product-info">
-                                                        <h4>
-                                                            <Link to={`/product-details/${item.id}`}>
-                                                                {item.title}
-                                                            </Link>
-                                                        </h4>
-                                                    </td>
+                            <td className="cart-product-image">
+                              <Link to={`/product-details/${item.id}`}>
+                                <Image
+                                  src={item.thumbnail}
+                                  alt={item.title}
+                                  fluid
+                                />
+                              </Link>
+                            </td>
 
-                                                    <td className="cart-product-price">
-                                                        ${item.price}
-                                                    </td>
+                            <td className="cart-product-info">
+                              <h4>
+                                <Link to={`/product-details/${item.id}`}>
+                                  {item.title}
+                                </Link>
+                              </h4>
+                            </td>
 
-                                                    <td className="cart-product-stock">
-                                                        {item.stock > 0 ? "In Stock" : "Out of Stock"}
-                                                    </td>
+                            <td className="cart-product-price">
+                              ${item.price}
+                            </td>
 
-                                                    <td className="cart-product-add-cart">
-                                                        <a
-                                                            className="submit-button-1"
-                                                            href="#"
-                                                            title="Add to Cart"
-                                                        >
-                                                            Add to Cart
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </Table>
-                                </div>
-                            </div>
-                        </Col>
-                    </Row>
-                </Container>
-            </div>
-        </>
-    )
+                            <td className="cart-product-stock">
+                              {item.stock > 0 ? (
+                                <span className="text-success">
+                                  In Stock
+                                </span>
+                              ) : (
+                                <span className="text-danger">
+                                  Out of Stock
+                                </span>
+                              )}
+                            </td>
+
+                            <td className="cart-product-add-cart">
+                              <a
+                                href="#"
+                                className="submit-button-1"
+                                title="Move To Cart"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  handleMoveToCart(item);
+                                }}
+                              >
+                                Move to Cart
+                              </a>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </Table>
+                  )}
+
+                </div>
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+    </>
+  )
 }
 
 export default Wishlist

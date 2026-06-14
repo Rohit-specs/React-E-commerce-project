@@ -1,9 +1,63 @@
-import React from 'react'
+import React, { useState } from 'react'
 import BreadCrumbs from '../components/BreadCrumbs'
 import { Tab, Nav, Table, Row, Col, Form, Button, Container, } from "react-bootstrap";
 import { ArrowDown, BoxArrowRight, File, House, Map, Person } from 'react-bootstrap-icons';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
+import { AccountSchema } from '../utils/FormSchema'
+import { Link } from 'react-router-dom';
+import { getAllUsers, updateUserById } from '../api/services';
+import { toast } from 'react-toastify';
 
 const MyAccount = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const fullName = `${user?.firstname || ""} ${user?.lastname || ""}`.trim();
+    const {
+        register,
+        handleSubmit,
+        formState: { errors }
+    } = useForm({
+        resolver: yupResolver(AccountSchema),
+        defaultValues: {
+            firstname: user?.firstname || "",
+            lastname: user?.lastname || "",
+            email: user?.email || "",
+            displayName: fullName
+        }
+    });
+    const onSubmit = async (data) => {
+        try {
+            const user = JSON.parse(localStorage.getItem("user"));
+            const usersRes = await getAllUsers();
+            const existingUser = usersRes.data.find(
+                (u) =>
+                    u.email.toLowerCase() === data.email.toLowerCase() &&
+                    u.id !== user.id
+            );
+            if (existingUser) {
+                toast.error("Email already exists");
+                return;
+            }
+            const updatedUser = {
+                firstname: data.firstname,
+                lastname: data.lastname,
+                email: data.email,
+            };
+            if (data.newPassword) {
+                updatedUser.password = data.newPassword;
+            }
+            const res = await updateUserById(user.id, updatedUser);
+            localStorage.setItem("user", JSON.stringify(res.data));
+            toast.success("Profile updated successfully");
+        } catch (error) {
+            toast.error("Something went wrong");
+            console.log(error);
+        }
+    };
+    const logoutHandler = () => {
+        localStorage.setItem("isActive", false)
+        localStorage.removeItem("user")
+    }
     return (
         <>
             <BreadCrumbs />
@@ -17,29 +71,29 @@ const MyAccount = () => {
                                         <Row>
                                             <Col lg={4}>
                                                 <div className="ltn__tab-menu-list mb-50">
-                                                    <Nav className="flex-column">
-                                                        <Nav.Link eventKey="dashboard">
-                                                            Dashboard <House/>
+                                                    <Nav  >
+                                                        <Nav.Link className='ltn__secondary-color d-flex align-items-center justify-content-between' eventKey="dashboard">
+                                                            Dashboard <House />
                                                         </Nav.Link>
 
-                                                        <Nav.Link eventKey="orders">
-                                                            Orders <File/>
+                                                        <Nav.Link className='ltn__secondary-color d-flex align-items-center justify-content-between' eventKey="orders">
+                                                            Orders <File />
                                                         </Nav.Link>
 
-                                                        <Nav.Link eventKey="downloads">
-                                                            Downloads <ArrowDown/>
+                                                        <Nav.Link className='ltn__secondary-color d-flex align-items-center justify-content-between' eventKey="downloads">
+                                                            Downloads <ArrowDown />
                                                         </Nav.Link>
 
-                                                        <Nav.Link eventKey="address">
-                                                            Address <Map/> 
+                                                        <Nav.Link className='ltn__secondary-color d-flex align-items-center justify-content-between' eventKey="address">
+                                                            Address <Map />
                                                         </Nav.Link>
 
-                                                        <Nav.Link eventKey="account">
-                                                            Account Details <Person/>
+                                                        <Nav.Link className='ltn__secondary-color d-flex align-items-center justify-content-between' eventKey="account">
+                                                            Account Details <Person />
                                                         </Nav.Link>
 
-                                                        <Nav.Link href="/login">
-                                                            Logout <BoxArrowRight/>
+                                                        <Nav.Link onClick={logoutHandler} className='ltn__secondary-color d-flex align-items-center justify-content-between' href="/login">
+                                                            Logout <BoxArrowRight />
                                                         </Nav.Link>
                                                     </Nav>
                                                 </div>
@@ -51,10 +105,10 @@ const MyAccount = () => {
                                                     <Tab.Pane eventKey="dashboard">
                                                         <div className="ltn__myaccount-tab-content-inner">
                                                             <p>
-                                                                Hello <strong>UserName</strong> (not{" "}
-                                                                <strong>UserName</strong>?{" "}
+                                                                Hello <strong>{fullName}</strong> (not{" "}
+                                                                <strong>{fullName}</strong>?{" "}
                                                                 <small>
-                                                                    <a href="/login-register">Log out</a>
+                                                                    <Link to="/login">Log out</Link>
                                                                 </small>
                                                                 )
                                                             </p>
@@ -249,40 +303,44 @@ const MyAccount = () => {
                                                             </p>
 
                                                             <div className="ltn__form-box">
-                                                                <Form>
+                                                                <Form onSubmit={handleSubmit(onSubmit)}>
                                                                     <Row className="mb-50">
                                                                         <Col md={6}>
-                                                                            <Form.Label>
-                                                                                First name:
-                                                                            </Form.Label>
-                                                                            <Form.Control type="text" />
+                                                                            <Form.Label>First name:</Form.Label>
+                                                                            <Form.Control
+                                                                                type="text"
+                                                                                {...register("firstname")}
+                                                                            />
+                                                                            <p className="text-danger">{errors.firstname?.message}</p>
                                                                         </Col>
 
                                                                         <Col md={6}>
-                                                                            <Form.Label>
-                                                                                Last name:
-                                                                            </Form.Label>
-                                                                            <Form.Control type="text" />
+                                                                            <Form.Label>Last name:</Form.Label>
+                                                                            <Form.Control
+                                                                                type="text"
+                                                                                {...register("lastname")}
+                                                                            />
+                                                                            <p className="text-danger">{errors.lastname?.message}</p>
                                                                         </Col>
 
                                                                         <Col md={6}>
-                                                                            <Form.Label>
-                                                                                Display Name:
-                                                                            </Form.Label>
+                                                                            <Form.Label>Display Name:</Form.Label>
                                                                             <Form.Control
                                                                                 type="text"
                                                                                 placeholder="Ethan"
+                                                                                {...register("displayName")}
                                                                             />
+                                                                            <p className="text-danger">{errors.displayName?.message}</p>
                                                                         </Col>
 
                                                                         <Col md={6}>
-                                                                            <Form.Label>
-                                                                                Display Email:
-                                                                            </Form.Label>
+                                                                            <Form.Label>Display Email:</Form.Label>
                                                                             <Form.Control
                                                                                 type="email"
                                                                                 placeholder="example@example.com"
+                                                                                {...register("email")}
                                                                             />
+                                                                            <p className="text-danger">{errors.email?.message}</p>
                                                                         </Col>
                                                                     </Row>
 
@@ -291,20 +349,32 @@ const MyAccount = () => {
 
                                                                         <Form.Group className="mb-3">
                                                                             <Form.Label>
-                                                                                Current password (leave blank to leave
-                                                                                unchanged):
+                                                                                Current password (leave blank to leave unchanged):
                                                                             </Form.Label>
 
-                                                                            <Form.Control type="password" />
+                                                                            <Form.Control
+                                                                                type="password"
+                                                                                {...register("currentPassword")}
+                                                                            />
+
+                                                                            <p className="text-danger">
+                                                                                {errors.currentPassword?.message}
+                                                                            </p>
                                                                         </Form.Group>
 
                                                                         <Form.Group className="mb-3">
                                                                             <Form.Label>
-                                                                                New password (leave blank to leave
-                                                                                unchanged):
+                                                                                New password (leave blank to leave unchanged):
                                                                             </Form.Label>
 
-                                                                            <Form.Control type="password" />
+                                                                            <Form.Control
+                                                                                type="password"
+                                                                                {...register("newPassword")}
+                                                                            />
+
+                                                                            <p className="text-danger">
+                                                                                {errors.newPassword?.message}
+                                                                            </p>
                                                                         </Form.Group>
 
                                                                         <Form.Group className="mb-3">
@@ -312,7 +382,14 @@ const MyAccount = () => {
                                                                                 Confirm new password:
                                                                             </Form.Label>
 
-                                                                            <Form.Control type="password" />
+                                                                            <Form.Control
+                                                                                type="password"
+                                                                                {...register("confirmPassword")}
+                                                                            />
+
+                                                                            <p className="text-danger">
+                                                                                {errors.confirmPassword?.message}
+                                                                            </p>
                                                                         </Form.Group>
                                                                     </fieldset>
 

@@ -5,14 +5,15 @@ import { ArrowLeft, ArrowRight, Heart, Hearts, Search, Star, StarFill } from 're
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Link, useParams } from 'react-router-dom'
 import { getProductById,getAllProducts} from '../api/services'
+import { useDispatch } from 'react-redux'
+import { addToCart } from '../store/slices/CartSlice'
+import { toast } from 'react-toastify'
 const ProductDetails = () => {
     const [showImage, setShowImage] = useState()
-
     const [product, setProduct] = useState();
     const [productsData, setProductsData] = useState([]);
-
     const { id } = useParams();
-
+    const dispatch = useDispatch()
    useEffect(() => {
         const fetchProduct = async () => {
             try {
@@ -84,7 +85,7 @@ const ProductDetails = () => {
 
                                                 {images.map((image, index) => {
                                                     return (<div key={index} className="single-small-img">
-                                                        <Image src={image} alt="Image" onClick={() => setShowImage(image)} />
+                                                        <Image src={image} role='button' alt="Image" onClick={() => setShowImage(image)} />
                                                     </div>)
                                                 })}
 
@@ -149,7 +150,10 @@ const ProductDetails = () => {
                                                         </div>
                                                     </li>
                                                     <li>
-                                                        <a href="#" className="theme-btn-1 btn btn-effect-1 d-add-to-cart" title="Add to Cart" data-bs-toggle="modal" data-bs-target="#add_to_cart_modal">
+                                                        <a href="#" onClick={()=>{
+                                                           dispatch(addToCart(product)) 
+                                                           toast.sucess("Product Added to Cart")
+                                                        }} className="theme-btn-1 btn btn-effect-1 d-add-to-cart" title="Add to Cart" data-bs-toggle="modal" data-bs-target="#add_to_cart_modal">
                                                             <span>ADD TO CART</span>
                                                         </a>
                                                     </li>

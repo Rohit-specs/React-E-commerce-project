@@ -1,19 +1,22 @@
 import { useEffect, useState } from 'react'
 import { Button, Col, Container, Form, Image, Row } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import BreadCrumbs from '../components/BreadCrumbs'
 import { Cart, Grid, Heart, Search, List } from 'react-bootstrap-icons'
 import { getAllProducts, getAllCategories, getProductsByCategory } from './../api/services'
+import { useParams } from "react-router-dom";
+import ProductCard from '../components/ProductCard'
 
 const Shop = () => {
   const [productsData, setProductsData] = useState([])
   const [categories, setCategories] = useState([]);
 
+  const { category } = useParams();
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await getAllProducts()
-        setProductsData(res.data.products)
+        // setProductsData(res.data.products)
       } catch (error) {
         console.log(error)
       }
@@ -23,35 +26,50 @@ const Shop = () => {
   }, []);
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchProducts = async () => {
       try {
-        const res = await getAllCategories()
-        setCategories(res.data)
+        let res;
+
+        if (category) {
+          res = await getProductsByCategory(category);
+          // setProductsData(res.data.products);
+        } else {
+          res = await getAllProducts();
+          setProductsData(res.data.products);
+        }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     };
 
-    fetchCategories()
+    fetchProducts();
+  }, [category]);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await getAllCategories();
+
+        // console.log("Categories:", res.data);
+
+        setCategories(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchCategories();
   }, []);
-
-  const handleCategoryClick = async (category) => {
-    try {
-      const res = await getProductsByCategory(category)
-
-      setProductsData(res.data.products)
-    } catch (error) {
-      console.log(error)
-    }
-  };
   return (
     <>
+      {/* <pre>
+        {JSON.stringify(categories, null, 2)}
+      </pre> */}
       <BreadCrumbs />
       <div className="ltn__product-area ">
         <Container>
           <Row>
             <Col lg={9} className="order-lg-2 mb-100">
-              <div className="ltn__shop-options">
+              {/* <div className="ltn__shop-options">
                 <ul>
                   <li>
                     <div className="showing-product-number text-right">
@@ -60,14 +78,15 @@ const Shop = () => {
                   </li>
 
                 </ul>
-              </div>
+              </div> */}
               <div className="tab-content">
                 <div className="tab-pane fade active show" id="liton_product_grid">
                   <div className="ltn__product-tab-content-inner ltn__product-grid-view">
                     <Row>
                       {productsData?.map((val) => {
                         return (<Col key={val.id} xl={4} sm={6} xs={12}>
-                          <div className="ltn__product-item text-center">
+                          <ProductCard product={val}/>
+                          {/* <div className="ltn__product-item text-center">
                             <div className="product-img">
                               <Link to={`/product-details/${val.id}`}><Image src={val.thumbnail} alt={val.title} /></Link>
                               <div className="product-badge">
@@ -103,7 +122,7 @@ const Shop = () => {
                                 <del>${(val.price / (1 - (val.discountPercentage / 100))).toFixed(2)}</del>
                               </div>
                             </div>
-                          </div>
+                          </div> */}
                         </Col>)
                       })}
 
@@ -112,7 +131,7 @@ const Shop = () => {
                 </div>
               </div>
 
-              <div className="ltn__pagination-area text-center">
+              {/* <div className="ltn__pagination-area text-center">
                 <div className="ltn__pagination ltn__pagination-2">
                   <ul>
                     <li><Link to="#"><i className="icon-arrow-left"></i></Link></li>
@@ -123,11 +142,11 @@ const Shop = () => {
                     <li><Link to="#"><i className="icon-arrow-right"></i></Link></li>
                   </ul>
                 </div>
-              </div>
+              </div> */}
             </Col>
             <Col lg={3} className="mb-100">
               <aside className="sidebar ltn__shop-sidebar">
-                <div className="widget ltn__price-filter-widget">
+                {/* <div className="widget ltn__price-filter-widget">
                   <h4 className="ltn__widget-title">Price</h4>
                   <div className="price_filter">
                     <div className="price_slider_amount">
@@ -136,20 +155,21 @@ const Shop = () => {
                     </div>
                     <div className="slider-range"></div>
                   </div>
-                </div>
+                </div> */}
                 <div className="widget ltn__menu-widget">
-                  <h4 className="ltn__widget-title">categories</h4>
+                  <h4 className="ltn__widget-title">Categories</h4>
                   <ul>
 
                     {categories.map((category) => (
-                      <li
-                        key={category.slug}
-                        style={{cursor:"pointer"}}
-                        onClick={() => handleCategoryClick(category.slug)}
-                        role='navigation'
-                      >
-                        {category.name}
-                      </li>
+                      <li key={category.slug}>
+                        <NavLink
+                          to={`/shop/${category.slug}`}
+                          className={({ isActive }) =>
+                            isActive ? "active-category" : ""
+                          }
+                        >
+                          {category.name}
+                        </NavLink></li>
                     ))}
                   </ul>
                 </div>

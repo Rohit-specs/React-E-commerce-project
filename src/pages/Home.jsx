@@ -3,7 +3,7 @@ import { Col, Container, Image, Row } from "react-bootstrap";
 import Slider from "react-slick";
 import HomeCarousel from "../components/HomeCarousel";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ArrowRight, ArrowLeftSquare, ArrowRightSquare, ChatLeftText, Heart, Search } from "react-bootstrap-icons";
+import { ArrowLeft, ArrowRight, ArrowLeftSquare, ArrowRightSquare, ChatLeftText, Heart, Search, Cart } from "react-bootstrap-icons";
 import featureItem1 from './../assets/icons/feature-items/1.png'
 import featureItem2 from './../assets/icons/feature-items/2.png'
 import featureItem3 from './../assets/icons/feature-items/3.png'
@@ -16,10 +16,12 @@ import bannerImage5 from './../assets/images/banner-area/banner-area-img-5.jpg'
 import bannerImage6 from './../assets/images/banner-area/banner-area-img-6.jpg'
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
-
+import { useDispatch,useSelector } from "react-redux";
+import {addToWishlist} from "./../store/slices/WishlistSlice"
 import "swiper/css";
 import "swiper/css/navigation";
 import { getAllProducts } from "../api/services";
+import ProductCard from "../components/ProductCard";
 
 const Home = () => {
     const [productsData, setProductsData] = useState([])
@@ -35,6 +37,7 @@ const Home = () => {
        
            fetchData();
     }, [])
+    const dispatch = useDispatch()
     return (
         <>
             <HomeCarousel carouselData={productsData} />
@@ -121,47 +124,11 @@ const Home = () => {
                         </Col>
                     </Row>
                     <Row className="justify-content-center">
-                        {productsData.slice(0, 8).map((value, index) => {
+                        {productsData.slice(0, 8).map((value) => {
                             return (
 
-                                <Col key={index} className="col-lg-3 col-md-4 col-sm-6 col-6">
-                                    <div className="ltn__product-item text-center">
-                                        <div className="product-img">
-                                            <Link to="/shop"><Image src={`${value.thumbnail}`} alt="#" /></Link>
-                                            <div className="product-badge">
-                                                <ul>
-                                                    <li className="badge-2">{Math.round(value.discountPercentage)}%</li>
-                                                </ul>
-                                            </div>
-                                            <div className="product-hover-action product-hover-action-2">
-                                                <ul>
-                                                    <li>
-                                                        <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
-                                                            <Search />
-                                                        </a>
-                                                    </li>
-                                                    <li className="add-to-cart">
-                                                        <a href="#" title="Add to Cart" data-bs-toggle="modal" data-bs-target="#add_to_cart_modal">
-                                                            <span className="cart-text d-none d-xl-block">Add to Cart</span>
-                                                            <span className="d-block d-xl-none"><i className="icon-handbag"></i></span>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
-                                                            <Heart />
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div className="product-info">
-                                            <h2 className="product-title"><a href="product-details.html">{value.title}</a></h2>
-                                            <div className="product-price">
-                                                <span>${value.price}</span>
-                                                <del>${(value.price / (1 - (value.discountPercentage / 100))).toFixed(2)}</del>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <Col key={value.id} className="col-lg-3 col-md-4 col-sm-6 col-6">
+                                    <ProductCard product={value}/>
                                 </Col>
                             )
                         })}
@@ -224,9 +191,9 @@ const Home = () => {
                             }}
 
                         ><div className="custom-prev slick-arrow"><ArrowLeft /></div>
-                            {productsData.map((value, index) => (
-                                <SwiperSlide key={index}>
-                                    <div className="ltn__product-item text-center">
+                            {productsData.map((value) => (
+                                <SwiperSlide key={value.id}>
+                                    {/* <div className="ltn__product-item text-center">
                                         <div className="product-img">
                                             <Link to="/shop"><Image src={value.thumbnail} alt="#" /></Link>
                                             <div className="product-badge">
@@ -237,18 +204,20 @@ const Home = () => {
                                             <div className="product-hover-action product-hover-action-2">
                                                 <ul>
                                                     <li>
-                                                        <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                        <a href="#" title="Quick View">
                                                             <Search />
                                                         </a>
                                                     </li>
                                                     <li className="add-to-cart">
-                                                        <a href="#" title="Add to Cart" data-bs-toggle="modal" data-bs-target="#add_to_cart_modal">
+                                                        <a href="#" title="Add to Cart">
                                                             <span className="cart-text d-none d-xl-block">Add to Cart</span>
-                                                            <span className="d-block d-xl-none"><i className="icon-handbag"></i></span>
+                                                            <span className="d-block d-xl-none"><Cart/></span>
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                        <a title="Quick View" onClick={()=>{
+dispatch(addToWishlist(value))
+                                                        }}>
                                                             <Heart />
                                                         </a>
                                                     </li>
@@ -262,7 +231,8 @@ const Home = () => {
                                                 <del>${(value.price / (1 - (value.discountPercentage / 100))).toFixed(2)}</del>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> */}
+                                    <ProductCard product={value}/>
                                 </SwiperSlide>
                             ))}<div className="custom-next slick-arrow slick-next"><ArrowRight /></div>
                         </Swiper>
