@@ -72,27 +72,27 @@ const MyAccount = () => {
                                             <Col lg={4}>
                                                 <div className="ltn__tab-menu-list mb-50">
                                                     <Nav  >
-                                                        <Nav.Link className='ltn__secondary-color d-flex align-items-center justify-content-between' eventKey="dashboard">
+                                                        <Nav.Link className='text-color-secondary text-color-secondary d-flex align-items-center justify-content-between' eventKey="dashboard">
                                                             Dashboard <House />
                                                         </Nav.Link>
 
-                                                        <Nav.Link className='ltn__secondary-color d-flex align-items-center justify-content-between' eventKey="orders">
+                                                        <Nav.Link className='text-color-secondary text-color-secondary d-flex align-items-center justify-content-between' eventKey="orders">
                                                             Orders <File />
                                                         </Nav.Link>
 
-                                                        <Nav.Link className='ltn__secondary-color d-flex align-items-center justify-content-between' eventKey="downloads">
+                                                        <Nav.Link className='text-color-secondary text-color-secondary d-flex align-items-center justify-content-between' eventKey="downloads">
                                                             Downloads <ArrowDown />
                                                         </Nav.Link>
 
-                                                        <Nav.Link className='ltn__secondary-color d-flex align-items-center justify-content-between' eventKey="address">
+                                                        <Nav.Link className='text-color-secondary text-color-secondary d-flex align-items-center justify-content-between' eventKey="address">
                                                             Address <Map />
                                                         </Nav.Link>
 
-                                                        <Nav.Link className='ltn__secondary-color d-flex align-items-center justify-content-between' eventKey="account">
+                                                        <Nav.Link className='text-color-secondary text-color-secondary d-flex align-items-center justify-content-between' eventKey="account">
                                                             Account Details <Person />
                                                         </Nav.Link>
 
-                                                        <Nav.Link onClick={logoutHandler} className='ltn__secondary-color d-flex align-items-center justify-content-between' href="/login">
+                                                        <Nav.Link onClick={logoutHandler} className='text-color-secondary text-color-secondary d-flex align-items-center justify-content-between' href="/login">
                                                             Logout <BoxArrowRight />
                                                         </Nav.Link>
                                                     </Nav>

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Button, Col, Container, Form, Image, Row } from 'react-bootstrap'
 import { Link, NavLink } from 'react-router-dom'
 import BreadCrumbs from '../components/BreadCrumbs'
-import { Cart, Grid, Heart, Search, List } from 'react-bootstrap-icons'
+import { Cart, Grid, Heart, Search, List, ArrowRight } from 'react-bootstrap-icons'
 import { getAllProducts, getAllCategories, getProductsByCategory } from './../api/services'
 import { useParams } from "react-router-dom";
 import ProductCard from '../components/ProductCard'
@@ -32,7 +32,7 @@ const Shop = () => {
 
         if (category) {
           res = await getProductsByCategory(category);
-          // setProductsData(res.data.products);
+          setProductsData(res.data.products);
         } else {
           res = await getAllProducts();
           setProductsData(res.data.products);
@@ -164,10 +164,9 @@ const Shop = () => {
                       <li key={category.slug}>
                         <NavLink
                           to={`/shop/${category.slug}`}
-                          className={({ isActive }) =>
-                            isActive ? "active-category" : ""
-                          }
+                          className={({ isActive }) =>isActive ? "active-category" : ""}
                         >
+                          <ArrowRight className='me-3'/>
                           {category.name}
                         </NavLink></li>
                     ))}

@@ -7,6 +7,7 @@ import { Link, useParams } from 'react-router-dom'
 import { getProductById,getAllProducts} from '../api/services'
 import { useDispatch } from 'react-redux'
 import { addToCart } from '../store/slices/CartSlice'
+import { addToWishlist } from '../store/slices/WishlistSlice'
 import { toast } from 'react-toastify'
 const ProductDetails = () => {
     const [showImage, setShowImage] = useState()
@@ -152,13 +153,16 @@ const ProductDetails = () => {
                                                     <li>
                                                         <a href="#" onClick={()=>{
                                                            dispatch(addToCart(product)) 
-                                                           toast.sucess("Product Added to Cart")
-                                                        }} className="theme-btn-1 btn btn-effect-1 d-add-to-cart" title="Add to Cart" data-bs-toggle="modal" data-bs-target="#add_to_cart_modal">
+                                                           toast.success("Product Moved To Cart")
+                                                        }} className="theme-btn-1 btn btn-effect-1 d-add-to-cart">
                                                             <span>ADD TO CART</span>
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="#" className="btn btn-effect-1 d-add-to-wishlist" title="Add to Cart" data-bs-toggle="modal" data-bs-target="#add_to_cart_modal">
+                                                        <a href="#" className="btn btn-effect-1 d-add-to-wishlist" onClick={()=>{
+                                                            dispatch(addToWishlist(product))
+                                                        }}>
+                                                            
                                                             <Heart />
                                                         </a>
                                                     </li>

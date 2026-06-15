@@ -1,6 +1,6 @@
 import { useState } from "react";
 import BreadCrumbs from "../components/BreadCrumbs";
-import { Container, Row, Col, Table, Form, Button, Image } from "react-bootstrap";
+import { Container, Row, Col, Table, Form, Button, Image, ButtonGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { removeFromCart, updateQuantity, applyCoupon, increament, decrement } from "../store/slices/CartSlice";
@@ -98,12 +98,14 @@ const Cart = () => {
                           </Col>
 
                           <Col lg={3} xs={6} className="mt-3 mt-lg-0">
-                            <div className="quantity-box d-flex justify-content-center align-content-center ">
+                            <div className="quantity-box">
+                         
                               <button
                                 type="button"
-                                className="flex-grow-1"
-                                onClick={() =>
+className="btn btn-outline-dark fs-3"
+                                onClick={() => {
                                   dispatch(decrement({ id: item.id }))
+                                }
                                 }
                               >
                                 -
@@ -112,22 +114,24 @@ const Cart = () => {
                               <Form.Control
                                 type="text"
                                 value={item.quantity}
-                                className="fs-4 text-center quantity-input h-100 w-50"
-                                onChange={(e) =>
+                                className="fs-6 text-center w-50"
+                                onChange={(e) =>{
                                   dispatch(
                                     updateQuantity({
                                       id: item.id,
                                       quantity: Number(e.target.value),
                                     })
                                   )
-                                }
+                                  toast.success("Quantity updated sucessfully")
+                                }}
                               />
 
                               <button
                                 type="button"
-                                className="flex-grow-1"
-                                onClick={() =>
+                                className="btn btn-outline-dark fs-3"
+                                onClick={() => {
                                   dispatch(increament({ id: item.id }))
+                                }
                                 }
                               >
                                 +

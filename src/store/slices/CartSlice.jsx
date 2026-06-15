@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+
+
 const calculateTotals = (state) => {
     state.totalQuantities = state.cartItems.reduce(
         (total, item) => total + item.quantity,
@@ -19,6 +21,10 @@ const calculateTotals = (state) => {
         taxableAmount +
         taxAmount +
         state.shippingCost;
+    state.totalQuantities = state.cartItems.reduce(
+    (total, item) => total + item.quantity,
+    0
+);
 };
 
 export const cartSlice = createSlice({

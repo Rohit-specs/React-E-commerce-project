@@ -17,7 +17,7 @@ const RootLayout = () => {
     (state) => state.wishlist?.wishlistItems?.length || 0
   );
   const cartCount = useSelector(
-    (state) => state.cart?.cartItems?.length || 0
+    (state) => state.cart?.totalQuantities || 0
   );
   const cartTotal = useSelector((state) =>  state.cart?.cartTotal || 0);
 
