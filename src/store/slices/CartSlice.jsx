@@ -22,9 +22,9 @@ const calculateTotals = (state) => {
         taxAmount +
         state.shippingCost;
     state.totalQuantities = state.cartItems.reduce(
-    (total, item) => total + item.quantity,
-    0
-);
+        (total, item) => total + item.quantity,
+        0
+    );
 };
 
 export const cartSlice = createSlice({
@@ -83,17 +83,17 @@ export const cartSlice = createSlice({
 
             calculateTotals(state);
         },
-        increament:(state,action)=>{
-            const cartitem = state.cartItems.find((item)=>item.id === action.payload.id)
-            if (cartitem ) cartitem.quantity += 1
-            
+        increament: (state, action) => {
+            const cartitem = state.cartItems.find((item) => item.id === action.payload.id)
+            if (cartitem) cartitem.quantity += 1
+
             calculateTotals(state)
 
         },
-        decrement:(state,action)=>{
-            const cartitem = state.cartItems.find((item)=>item.id === action.payload.id)
-            if(cartitem){
-                cartitem.quantity = Math.max(cartitem.quantity-1,1)
+        decrement: (state, action) => {
+            const cartitem = state.cartItems.find((item) => item.id === action.payload.id)
+            if (cartitem) {
+                cartitem.quantity = Math.max(cartitem.quantity - 1, 1)
             }
 
             calculateTotals(state)
@@ -149,14 +149,6 @@ export const cartSlice = createSlice({
     }
 });
 
-export const {
-    addToCart,
-    removeFromCart,
-    updateQuantity,
-    applyCoupon,
-    clearCart,
-    increament,
-    decrement
-} = cartSlice.actions;
+export const { addToCart, removeFromCart, updateQuantity, applyCoupon, clearCart, increament, decrement } = cartSlice.actions;
 
 export default cartSlice.reducer;

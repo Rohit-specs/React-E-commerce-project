@@ -16,7 +16,7 @@ const Shop = () => {
     const fetchData = async () => {
       try {
         const res = await getAllProducts()
-        // setProductsData(res.data.products)
+        setProductsData(res.data.products)
       } catch (error) {
         console.log(error)
       }

@@ -164,6 +164,56 @@ export const CheckoutSchema = yup.object({firstname: yup
       "Enter a valid email address"
     ),
   
-  
+  phonenumber: yup
+    .string()
+    .required("phone Number is required")
+    .matches(
+      /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/,
+      "Enter a valid phone number"
+    ),
+company: yup
+    .string()
+    .trim()
+    .nullable(),
 
-})
+  companyAddress: yup
+    .string()
+    .trim()
+    .nullable(),
+
+  country: yup
+    .string()
+    .required("Country is required")
+    .notOneOf(["Select Country"], "Please select a country"),
+
+  address1: yup
+    .string()
+    .trim()
+    .required("Street address is required"),
+
+  address2: yup
+    .string()
+    .trim()
+    .nullable(),
+
+  city: yup
+    .string()
+    .trim()
+    .required("City is required"),
+
+  state: yup
+    .string()
+    .trim()
+    .required("State is required"),
+
+  zip: yup
+    .string()
+    .trim()
+    .required("Zip code is required"),
+
+  orderNotes: yup
+    .string()
+    .trim()
+    .max(500, "Order notes cannot exceed 500 characters")
+    .nullable(),
+});

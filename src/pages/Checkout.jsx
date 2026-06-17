@@ -1,21 +1,63 @@
 import { Container, Row, Col, Form, Button, Table, Image, Accordion } from "react-bootstrap";
 import BreadCrumbs from '../components/BreadCrumbs'
 import { Link, resolvePath } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Paypal } from "react-bootstrap-icons";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { CheckoutSchema } from "../utils/FormSchema";
+import { useSelector } from "react-redux";
+import { cartSlice } from "../store/slices/CartSlice";
+import { createOrder } from "../api/services";
+import { toast } from "react-toastify";
 
 const Checkout = () => {
   const [selectedPayment, setSelectedPayment] = useState("cod");
-  const isLoggedIn = localStorage.getItem("isActive") || false
+  const [isLoggedIn, setIsLoggedIn] = useState(Boolean(localStorage.getItem("isActive")) || false)
+  useEffect(() => {
+    setIsLoggedIn(Boolean(localStorage.getItem("isActive")) || false)
+  }, [isLoggedIn])
   const userData = JSON.parse(localStorage.getItem("user"))
-  const {register,handleSubmit,formState:{error},reset}=useForm({resolver:yupResolver(CheckoutSchema),defaultValues:{
-    firstname:userData.firstname,
-    lastname:userData.lastname,
-    email:userData.email
-  }})
+  const { register, handleSubmit, formState: { error }, reset } = useForm({
+    resolver: yupResolver(CheckoutSchema), defaultValues: {
+      firstname: userData?.firstname,
+      lastname: userData?.lastname,
+      email: userData?.email
+    }
+  })
+  const {
+    cartItems,
+    cartTotal,
+    shippingCost,
+    tax,
+    orderTotal,
+    discountPercent,
+    discoutAmount,
+  } = useSelector((state) => state.cart)
+
+  const submitHandler = async (data) => {
+
+    if(isLoggedIn){
+      toast.info("Please Login Before Checkout")
+      return
+    }
+    if(cartItems===[]){
+      toast.info("Your Cart is Empty")
+      return
+    }
+    const payload = {
+      createdAt: new Date().toISOString(),
+      email: data.email,
+      orders: cartItems,
+      userId: userData || "USR001",
+      country: data.country,
+      state: data.state,
+      city: data.city,
+      zip: data.zip,
+      address: `${data.address1}${data.address2 ? `, ${data.address2}` : ""}`
+    }
+    await createOrder()
+  }
   return (
     <>
       {/* {JSON.stringify(userData,null,2)} */}
@@ -37,49 +79,49 @@ const Checkout = () => {
                     </Link>
                   </h5>
                 </div>}
-                
-                <div class="ltn__checkout-single-content mt-50">
-                  <h4 class="title-2">Billing Details</h4>
-                  <div class="ltn__checkout-single-content-info">
+
+                <div className="ltn__checkout-single-content mt-50">
+                  <h4 className="title-2">Billing Details</h4>
+                  <div className="ltn__checkout-single-content-info">
                     <Form action="#" >
                       <h6>Personal Information</h6>
-                      <div class="row">
-                        <div class="col-md-6">
-                          <div class="input-item input-item-name">
-                            <Form.Control type="text" name="firstname" placeholder="First name" {...register("firstname")}/>
+                      <div className="row">
+                        <div className="col-md-6">
+                          <div className="input-item input-item-name">
+                            <Form.Control type="text" name="firstname" placeholder="First name" {...register("firstname")} />
                           </div>
                         </div>
-                        <div class="col-md-6">
-                          <div class="input-item input-item-name">
-                            <Form.Control type="text" name="lastname" placeholder="Last name" {...register("lastname")}/>
+                        <div className="col-md-6">
+                          <div className="input-item input-item-name">
+                            <Form.Control type="text" name="lastname" placeholder="Last name" {...register("lastname")} />
                           </div>
                         </div>
-                        <div class="col-md-6">
-                          <div class="input-item input-item-email">
-                            <Form.Control type="email" name="email" placeholder="email address" {...register("email")}/>
+                        <div className="col-md-6">
+                          <div className="input-item input-item-email">
+                            <Form.Control type="email" name="email" placeholder="email address" {...register("email")} />
                           </div>
                         </div>
-                        <div class="col-md-6">
-                          <div class="input-item input-item-phone">
-                            <Form.Control type="text" name="phone" placeholder="phone number" />
+                        <div className="col-md-6">
+                          <div className="input-item input-item-phone">
+                            <Form.Control type="text" name="phonenumber" placeholder="phone number" />
                           </div>
                         </div>
-                        <div class="col-md-6">
-                          <div class="input-item input-item-website">
+                        <div className="col-md-6">
+                          <div className="input-item input-item-website">
                             <Form.Control type="text" name="company" placeholder="Company name (optional)" />
                           </div>
                         </div>
-                        <div class="col-md-6">
-                          <div class="input-item input-item-website">
+                        <div className="col-md-6">
+                          <div className="input-item input-item-website">
                             <Form.Control type="text" name="phone" placeholder="Company address (optional)" />
                           </div>
                         </div>
                       </div>
-                      <div class="row">
-                        <div class="col-lg-4 col-md-6">
+                      <div className="row">
+                        <div className="col-lg-4 col-md-6">
                           <h6>Country</h6>
-                          <div class="input-item">
-                            <Form.Select className="nice-select">
+                          <div className="input-item">
+                            <Form.Select className="nice-select" {...register("country")}>
                               <option>Select Country</option>
                               <option>Australia</option>
                               <option>Canada</option>
@@ -91,52 +133,48 @@ const Checkout = () => {
                             </Form.Select>
                           </div>
                         </div>
-                        <div class="col-lg-12 col-md-12">
+                        <div className="col-lg-12 col-md-12">
                           <h6>Address</h6>
-                          <div class="row">
-                            <div class="col-md-6">
-                              <div class="input-item">
-                                <Form.Control type="text" placeholder="House number and street name" />
+                          <div className="row">
+                            <div className="col-md-6">
+                              <div className="input-item">
+                                <Form.Control type="text" placeholder="House number and street name" {...register("address1")}/>
                               </div>
                             </div>
-                            <div class="col-md-6">
-                              <div class="input-item">
-                                <Form.Control type="text" placeholder="Apartment, suite, unit etc. (optional)" />
+                            <div className="col-md-6">
+                              <div className="input-item">
+                                <Form.Control type="text" placeholder="Apartment, suite, unit etc. (optional)" {...register("address2")} />
                               </div>
                             </div>
                           </div>
                         </div>
-                        <div class="col-lg-4 col-md-6">
+                        <div className="col-lg-4 col-md-6">
                           <h6>Town / City</h6>
-                          <div class="input-item">
-                            <Form.Control type="text" placeholder="City" />
+                          <div className="input-item">
+                            <Form.Control type="text" placeholder="City" {...register("city")}/>
                           </div>
                         </div>
-                        <div class="col-lg-4 col-md-6">
+                        <div className="col-lg-4 col-md-6">
                           <h6>State </h6>
-                          <div class="input-item">
-                            <Form.Control type="text" placeholder="State" />
+                          <div className="input-item">
+                            <Form.Control type="text" placeholder="State" {...register("state")}/>
                           </div>
                         </div>
-                        <div class="col-lg-4 col-md-6">
+                        <div className="col-lg-4 col-md-6">
                           <h6>Zip</h6>
-                          <div class="input-item">
-                            <Form.Control type="text" placeholder="Zip" />
+                          <div className="input-item">
+                            <Form.Control type="text" placeholder="Zip" {...register("zip")}/>
                           </div>
                         </div>
                       </div>
-                      <p>
-                        <label className="input-info-save mb-0">
-                          <input type="checkbox" name="agree" /> Create an account?
-                        </label>
-                      </p>
                       <h6>Order Notes (optional)</h6>
-                      <div class="input-item input-item-textarea">
+                      <div className="input-item input-item-textarea">
                         <Form.Control
                           as="textarea"
                           rows={4}
                           name="ltn__message"
                           placeholder="Notes about your order, e.g. special notes for delivery."
+                          {...register("orderNotes")}
                         />
                       </div>
 
@@ -145,7 +183,7 @@ const Checkout = () => {
                 </div>
               </div>
             </Col>
-            <div class="col-lg-6">
+            <div className="col-lg-6">
               <div className="ltn__checkout-payment-method mt-50">
                 <h4 className="title-2">Payment Method</h4>
 
@@ -234,56 +272,69 @@ const Checkout = () => {
                     other purposes described in our privacy policy.
                   </p>
                 </div>
-                <button class="btn theme-btn-1 btn-effect-1 text-uppercase" type="submit">Place order</button>
+                <button className="btn theme-btn-1 btn-effect-1 text-uppercase" onClick={handleSubmit(submitHandler)} type="submit">Place order</button>
               </div>
             </div>
-            <div class="col-lg-6">
-              <div class="shoping-cart-total mt-50">
-                <h4 class="title-2">Cart Totals</h4>
-                <Table className="table">
-                  <tbody>
-                    <tr>
-                      <td>
-                        Brake Conversion Kit <strong>x 2</strong>
-                      </td>
-                      <td>$298.00</td>
-                    </tr>
+            <div className="col-lg-6">
+              {cartItems.length > 0 &&
+                <div className="shoping-cart-total mt-50">
+                  <h4>Cart Totals</h4>
 
-                    <tr>
-                      <td>
-                        OE Replica Wheels <strong>x 2</strong>
-                      </td>
-                      <td>$170.00</td>
-                    </tr>
+                  <Table className="table">
+                    <tbody>
+                      {cartItems.map((item) => {
+                        return (<tr key={item.id}>
+                          <td>
+                            {item.title} <strong>x {item.quantity}</strong>
+                          </td>
+                          <td>${item.price * item.quantity}</td>
+                        </tr>)
+                      })}
+                      <tr>
+                        <td>Cart Subtotal</td>
+                        <td>${cartTotal.toFixed(2)}</td>
+                      </tr>
 
-                    <tr>
-                      <td>
-                        Wheel Bearing Retainer <strong>x 2</strong>
-                      </td>
-                      <td>$150.00</td>
-                    </tr>
+                      <tr>
+                        <td>Shipping and Handling</td>
+                        <td>${shippingCost.toFixed(2)}</td>
+                      </tr>
 
-                    <tr>
-                      <td>Shipping and Handing</td>
-                      <td>$15.00</td>
-                    </tr>
+                      <tr>
+                        <td>Discount ({discountPercent}%)</td>
+                        <td>
+                          -${discoutAmount.toFixed(2)}
+                        </td>
+                      </tr>
 
-                    <tr>
-                      <td>Vat</td>
-                      <td>$0.00</td>
-                    </tr>
+                      <tr>
+                        <td>Tax ({tax}%)</td>
+                        <td>
+                          $
+                          {(
+                            ((cartTotal - discoutAmount) *
+                              tax) /
+                            100
+                          ).toFixed(2)}
+                        </td>
+                      </tr>
 
-                    <tr>
-                      <td>
-                        <strong>Order Total</strong>
-                      </td>
-                      <td>
-                        <strong>$633.00</strong>
-                      </td>
-                    </tr>
-                  </tbody>
-                </Table>
-              </div>
+                      <tr>
+                        <td>
+                          <strong>Order Total</strong>
+                        </td>
+                        <td>
+                          <strong>
+                            ${orderTotal.toFixed(2)}
+                          </strong>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </Table>
+
+
+                </div>
+              }
             </div>
           </Row>
         </Container>

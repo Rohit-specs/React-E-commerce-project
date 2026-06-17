@@ -43,3 +43,15 @@ export const createUser = async (data) => {
   const response = await mockApi.post("/user", data)
   return response
 }
+
+
+
+
+export const createOrder = async (orderData) => {
+  const response = await mockApi.post("/order", orderData)
+  return response
+}
+export const getOrderById = async (id) => {
+  const response = await mockApi.get(`/order/${id}`)
+  return response
+}
