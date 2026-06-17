@@ -131,3 +131,39 @@ export const AccountSchema = yup.object().shape({
       "Passwords do not match"
     ),
 });
+
+export const CheckoutSchema = yup.object({firstname: yup
+    .string()
+    .required("First name is required")
+    .min(2, "First name must be at least 2 characters")
+    .max(20, "First name cannot exceed 20 characters")
+    .matches(/^[A-Za-z]+$/, "First name can only contain letters")
+    .test(
+      "no-spaces",
+      "First name cannot contain spaces",
+      (value) => !value || !value.includes(" ")
+    ),
+
+  lastname: yup
+    .string()
+    .required("Last name is required")
+    .min(2, "Last name must be at least 2 characters")
+    .max(20, "Last name cannot exceed 20 characters")
+    .matches(/^[A-Za-z]+$/, "Last name can only contain letters")
+    .test(
+      "no-spaces",
+      "Last name cannot contain spaces",
+      (value) => !value || !value.includes(" ")
+    ),
+
+  email: yup
+    .string()
+    .required("Email is required")
+    .matches(
+      /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+      "Enter a valid email address"
+    ),
+  
+  
+
+})

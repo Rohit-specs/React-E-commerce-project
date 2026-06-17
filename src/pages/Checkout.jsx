@@ -1,20 +1,31 @@
 import { Container, Row, Col, Form, Button, Table, Image, Accordion } from "react-bootstrap";
 import BreadCrumbs from '../components/BreadCrumbs'
-import { Link } from "react-router-dom";
+import { Link, resolvePath } from "react-router-dom";
 import { useState } from "react";
 import { Paypal } from "react-bootstrap-icons";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { CheckoutSchema } from "../utils/FormSchema";
 
 const Checkout = () => {
   const [selectedPayment, setSelectedPayment] = useState("cod");
+  const isLoggedIn = localStorage.getItem("isActive") || false
+  const userData = JSON.parse(localStorage.getItem("user"))
+  const {register,handleSubmit,formState:{error},reset}=useForm({resolver:yupResolver(CheckoutSchema),defaultValues:{
+    firstname:userData.firstname,
+    lastname:userData.lastname,
+    email:userData.email
+  }})
   return (
     <>
+      {/* {JSON.stringify(userData,null,2)} */}
       <BreadCrumbs />
       <div className="ltn__checkout-area mb-100">
         <Container>
           <Row>
             <Col lg={12}>
               <div className="ltn__checkout-inner">
-                <div className="ltn__checkout-single-content ltn__returning-customer-wrap">
+                {!Boolean(isLoggedIn) && <div className="ltn__checkout-single-content ltn__returning-customer-wrap">
                   <h5>
                     Returning customer?{" "}
                     <Link
@@ -25,64 +36,8 @@ const Checkout = () => {
                       Click here to login
                     </Link>
                   </h5>
-
-                  <div
-                    id="ltn__returning-customer-login"
-                    className="collapse ltn__checkout-single-content-info"
-                  >
-                    <div className="ltn_coupon-code-form ltn__form-box">
-                      <p>Please login your account.</p>
-
-                      <Form>
-                        <Row>
-                          <Col md={6}>
-                            <div className="input-item input-item-name">
-                              <Form.Control
-                                type="text"
-                                name="ltn__name"
-                                placeholder="Enter your name"
-                              />
-                            </div>
-                          </Col>
-
-                          <Col md={6}>
-                            <div className="input-item input-item-email">
-                              <Form.Control
-                                type="email"
-                                name="ltn__email"
-                                placeholder="Enter email address"
-                              />
-                            </div>
-                          </Col>
-                        </Row>
-
-                        <Button className="btn theme-btn-1 btn-effect-1 text-uppercase">
-                          Login
-                        </Button>
-
-                        <label className="input-info-save mb-0">
-                          <input type="checkbox" name="agree" /> Remember me
-                        </label>
-
-                        <p className="mt-30">
-                          <Link to="/signup">Lost your password?</Link>
-                        </p>
-                      </Form>
-                    </div>
-                  </div>
-                </div>
-                <div class="ltn__checkout-single-content ltn__coupon-code-wrap">
-                  <h5>Have a coupon? <a class="ltn__secondary-color" href="#ltn__coupon-code" data-bs-toggle="collapse">Click here to enter your code</a></h5>
-                  <div id="ltn__coupon-code" class="collapse ltn__checkout-single-content-info">
-                    <div class="ltn__coupon-code-form">
-                      <p>If you have a coupon code, please apply it below.</p>
-                      <Form action="#" >
-                        <Form.Control type="text" name="coupon-code" placeholder="Coupon code" />
-                        <Button class="btn theme-btn-2 btn-effect-2 text-uppercase">Apply Coupon</Button>
-                      </Form>
-                    </div>
-                  </div>
-                </div>
+                </div>}
+                
                 <div class="ltn__checkout-single-content mt-50">
                   <h4 class="title-2">Billing Details</h4>
                   <div class="ltn__checkout-single-content-info">
@@ -91,32 +46,32 @@ const Checkout = () => {
                       <div class="row">
                         <div class="col-md-6">
                           <div class="input-item input-item-name">
-                            <Form.Control type="text" name="ltn__name" placeholder="First name" />
+                            <Form.Control type="text" name="firstname" placeholder="First name" {...register("firstname")}/>
                           </div>
                         </div>
                         <div class="col-md-6">
                           <div class="input-item input-item-name">
-                            <Form.Control type="text" name="ltn__lastname" placeholder="Last name" />
+                            <Form.Control type="text" name="lastname" placeholder="Last name" {...register("lastname")}/>
                           </div>
                         </div>
                         <div class="col-md-6">
                           <div class="input-item input-item-email">
-                            <Form.Control type="email" name="ltn__email" placeholder="email address" />
+                            <Form.Control type="email" name="email" placeholder="email address" {...register("email")}/>
                           </div>
                         </div>
                         <div class="col-md-6">
                           <div class="input-item input-item-phone">
-                            <Form.Control type="text" name="ltn__phone" placeholder="phone number" />
+                            <Form.Control type="text" name="phone" placeholder="phone number" />
                           </div>
                         </div>
                         <div class="col-md-6">
                           <div class="input-item input-item-website">
-                            <Form.Control type="text" name="ltn__company" placeholder="Company name (optional)" />
+                            <Form.Control type="text" name="company" placeholder="Company name (optional)" />
                           </div>
                         </div>
                         <div class="col-md-6">
                           <div class="input-item input-item-website">
-                            <Form.Control type="text" name="ltn__phone" placeholder="Company address (optional)" />
+                            <Form.Control type="text" name="phone" placeholder="Company address (optional)" />
                           </div>
                         </div>
                       </div>
@@ -262,7 +217,7 @@ const Checkout = () => {
 
                       <span className="me-2">PayPal</span>
 
-                      <Paypal/>
+                      <Paypal />
                     </div>
 
                     <Accordion.Body>

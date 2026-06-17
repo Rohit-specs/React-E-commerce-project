@@ -99,10 +99,10 @@ const Cart = () => {
 
                           <Col lg={3} xs={6} className="mt-3 mt-lg-0">
                             <div className="quantity-box">
-                         
+
                               <button
                                 type="button"
-className="btn btn-outline-dark fs-3"
+                                className="btn btn-outline-dark fs-3"
                                 onClick={() => {
                                   dispatch(decrement({ id: item.id }))
                                 }
@@ -115,7 +115,7 @@ className="btn btn-outline-dark fs-3"
                                 type="text"
                                 value={item.quantity}
                                 className="fs-6 text-center w-50"
-                                onChange={(e) =>{
+                                onChange={(e) => {
                                   dispatch(
                                     updateQuantity({
                                       id: item.id,
