@@ -167,10 +167,14 @@ export const CheckoutSchema = yup.object({firstname: yup
   phonenumber: yup
     .string()
     .required("phone Number is required")
+    // .matches(
+    //   /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/,
+    //   "Enter a valid phone number"
+    // ),
     .matches(
-      /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/,
-      "Enter a valid phone number"
-    ),
+    /^[6-9]\d{9}$/,
+    "Enter a valid 10 digit phone number"
+  ),
 company: yup
     .string()
     .trim()

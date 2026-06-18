@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import BreadCrumbs from '../components/BreadCrumbs'
 import { Tab, Nav, Table, Row, Col, Form, Button, Container, } from "react-bootstrap";
 import { ArrowDown, BoxArrowRight, File, House, Map, Person } from 'react-bootstrap-icons';
@@ -6,12 +6,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { AccountSchema } from '../utils/FormSchema'
 import { Link } from 'react-router-dom';
-import { getAllUsers, updateUserById } from '../api/services';
+import { getAllUsers, getOrderByUserId, updateUserById } from '../api/services';
 import { toast } from 'react-toastify';
 
 const MyAccount = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     const fullName = `${user?.firstname || ""} ${user?.lastname || ""}`.trim();
+    const [userOrders, setUserOrders] = useState([]);
     const {
         register,
         handleSubmit,
@@ -25,9 +26,15 @@ const MyAccount = () => {
             displayName: fullName
         }
     });
+    useEffect(() => {
+        const fetchOrderData = async () => {
+            const response = await getOrderByUserId(user.id)
+            Array.isArray(response.data) ? setUserOrders(response.data) : setUserOrders([response.data])
+        }
+        fetchOrderData()
+    }, [user])
     const onSubmit = async (data) => {
         try {
-            const user = JSON.parse(localStorage.getItem("user"));
             const usersRes = await getAllUsers();
             const existingUser = usersRes.data.find(
                 (u) =>
@@ -58,8 +65,16 @@ const MyAccount = () => {
         localStorage.setItem("isActive", false)
         localStorage.removeItem("user")
     }
+    const [openedOrder, setOpenedOrder] = useState(null);
+
+    const handleView = (id) => {
+        setOpenedOrder((prev) =>
+            prev === id ? null : id
+        );
+    };
     return (
         <>
+            {/* {JSON.stringify(userOrders, null, 4)} */}
             <BreadCrumbs />
             <div className="liton__wishlist-area pb-50">
                 <Container>
@@ -124,11 +139,10 @@ const MyAccount = () => {
                                                             </p>
                                                         </div>
                                                     </Tab.Pane>
-
-
                                                     <Tab.Pane eventKey="orders">
                                                         <div className="ltn__myaccount-tab-content-inner">
                                                             <div className="table-responsive">
+
                                                                 <Table>
                                                                     <thead>
                                                                         <tr>
@@ -141,35 +155,104 @@ const MyAccount = () => {
                                                                     </thead>
 
                                                                     <tbody>
-                                                                        <tr>
-                                                                            <td>1</td>
-                                                                            <td>Jun 22, 2019</td>
-                                                                            <td>Pending</td>
-                                                                            <td>$3000</td>
-                                                                            <td>
-                                                                                <a href="/cart">View</a>
-                                                                            </td>
-                                                                        </tr>
 
-                                                                        <tr>
-                                                                            <td>2</td>
-                                                                            <td>Nov 22, 2019</td>
-                                                                            <td>Approved</td>
-                                                                            <td>$200</td>
-                                                                            <td>
-                                                                                <a href="/cart">View</a>
-                                                                            </td>
-                                                                        </tr>
-
-                                                                        <tr>
-                                                                            <td>3</td>
-                                                                            <td>Jan 12, 2020</td>
-                                                                            <td>On Hold</td>
-                                                                            <td>$990</td>
-                                                                            <td>
-                                                                                <a href="/cart">View</a>
-                                                                            </td>
-                                                                        </tr>
+                                                                        {userOrders?.length > 0 ? (
+                                                                            userOrders.map((order, index) => (
+                                                                                <Fragment key={order.id}>
+                                                                                    <tr>
+                                                                                        <td>{index + 1}</td>
+                                                                                        <td>{new Date(order.createdAt).toDateString()}
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            {order.status || "Pending"}
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            ${order.orderTotal}
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <a
+                                                                                                href="#"
+                                                                                                onClick={(e) => {
+                                                                                                    e.preventDefault();
+                                                                                                    handleView(order.id);
+                                                                                                }}
+                                                                                            >
+                                                                                                {openedOrder === order.id ? "Hide" : "View"}
+                                                                                            </a>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    {openedOrder === order.id && (
+                                                                                        <tr>
+                                                                                            <td colSpan={5}>
+                                                                                                <div className="ltn__checkout-single-content-info">
+                                                                                                    <h5 className="mb-4">
+                                                                                                        Order Details
+                                                                                                    </h5>
+                                                                                                    {order.orders?.map((item) => (
+                                                                                                        <div
+                                                                                                            key={item.id}
+                                                                                                            className="d-flex justify-content-between align-items-center mb-3"
+                                                                                                        >
+                                                                                                            <div>
+                                                                                                                {item.title}
+                                                                                                            </div>
+                                                                                                            <div>
+                                                                                                                x {item.quantity}
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    ))}
+                                                                                                    <hr />
+                                                                                                    <Row>
+                                                                                                        <Col md={6}>
+                                                                                                            <p>
+                                                                                                                <strong>Items:</strong>{" "}
+                                                                                                                {order.orders.length}
+                                                                                                            </p>
+                                                                                                            <p>
+                                                                                                                <strong>Country:</strong>
+                                                                                                                {" "}
+                                                                                                                {order.country}
+                                                                                                            </p>
+                                                                                                            <p>
+                                                                                                                <strong>State:</strong>
+                                                                                                                {" "}
+                                                                                                                {order.state}
+                                                                                                            </p>
+                                                                                                        </Col>
+                                                                                                        <Col md={6}>
+                                                                                                            <p>
+                                                                                                                <strong>City:</strong>
+                                                                                                                {" "}
+                                                                                                                {order.city}
+                                                                                                            </p>
+                                                                                                            <p>
+                                                                                                                <strong>Address:</strong>
+                                                                                                                {" "}
+                                                                                                                {order.address}
+                                                                                                            </p>
+                                                                                                            <h5>
+                                                                                                                Total:
+                                                                                                                {" "}
+                                                                                                                ${order.orderTotal}
+                                                                                                            </h5>
+                                                                                                        </Col>
+                                                                                                    </Row>
+                                                                                                </div>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    )}
+                                                                                </Fragment>
+                                                                            ))
+                                                                        ) : (
+                                                                            <tr>
+                                                                                <td
+                                                                                    colSpan={5}
+                                                                                    className="text-center py-5"
+                                                                                >
+                                                                                    No Orders Found
+                                                                                </td>
+                                                                            </tr>
+                                                                        )}
                                                                     </tbody>
                                                                 </Table>
                                                             </div>

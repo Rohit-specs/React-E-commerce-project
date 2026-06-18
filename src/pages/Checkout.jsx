@@ -6,25 +6,86 @@ import { Paypal } from "react-bootstrap-icons";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { CheckoutSchema } from "../utils/FormSchema";
-import { useSelector } from "react-redux";
-import { cartSlice } from "../store/slices/CartSlice";
-import { createOrder } from "../api/services";
+import { useDispatch, useSelector } from "react-redux";
+import { cartSlice, clearCart } from "../store/slices/CartSlice";
+import { createOrder, getOrderByUserId, getUserById } from "../api/services";
 import { toast } from "react-toastify";
 
 const Checkout = () => {
   const [selectedPayment, setSelectedPayment] = useState("cod");
-  const [isLoggedIn, setIsLoggedIn] = useState(Boolean(localStorage.getItem("isActive")) || false)
-  useEffect(() => {
-    setIsLoggedIn(Boolean(localStorage.getItem("isActive")) || false)
-  }, [isLoggedIn])
+  const isLoggedIn = Boolean(localStorage.getItem("isActive"))
   const userData = JSON.parse(localStorage.getItem("user"))
-  const { register, handleSubmit, formState: { error }, reset } = useForm({
+  const [orderData, setOrderData] = useState([])
+
+  const { register, handleSubmit, formState: { errors }, reset } = useForm({
     resolver: yupResolver(CheckoutSchema), defaultValues: {
-      firstname: userData?.firstname,
-      lastname: userData?.lastname,
-      email: userData?.email
+      firstname: userData?.firstname || "",
+      lastname: userData?.lastname || "",
+      email: userData?.email || ""
     }
   })
+  // useEffect(() => {
+  //   const fetchOrderData = async() => {
+  //     const res = await getOrderByUserId(userData.id)
+  //     setOrderData(Array.isArray(res.data)? res.data: [res.data])
+  //   }
+  //   fetchOrderData()
+  //   if (!orderData) return;
+  //   else{
+  //     const latestOrder = orderData[orderData.length - 1];
+  //     reset({
+  //     firstname: userData?.firstname || "",
+  //     lastname: userData?.lastname || "",
+  //     email: userData?.email || "",
+
+  //     country: latestOrder?.country || "",
+  //     state: latestOrder?.state || "",
+  //     city: latestOrder?.city || "",
+  //     zip: latestOrder?.zip || "",
+
+  //     address1: latestOrder?.address || "",
+  //   });
+  //   }
+
+   
+
+  // }, [userData])
+ useEffect(() => {
+  const fetchOrderData = async () => {
+    try {
+      const res = await getOrderByUserId(userData.id)
+
+      setOrderData(
+        Array.isArray(res.data)
+          ? res.data
+          : [res.data]
+      )
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  if (userData?.id) {
+    fetchOrderData()
+  }
+
+}, [userData?.id])
+
+useEffect(() => {
+  if (!orderData?.length) return
+  const latestOrder = orderData[orderData.length - 1]
+  reset({
+    firstname: userData?.firstname || "",
+    lastname: userData?.lastname || "",
+    email: userData?.email || "",
+    country: latestOrder.country || "",
+    state: latestOrder.state || "",
+    city: latestOrder.city || "",
+    zip: latestOrder.zip || "",
+    address1: latestOrder.address || ""
+  })
+}, [orderData, reset ])
+  const dispatch = useDispatch()
   const {
     cartItems,
     cartTotal,
@@ -37,11 +98,11 @@ const Checkout = () => {
 
   const submitHandler = async (data) => {
 
-    if(isLoggedIn){
+    if (!isLoggedIn) {
       toast.info("Please Login Before Checkout")
       return
     }
-    if(cartItems===[]){
+    if (cartItems.length === 0) {
       toast.info("Your Cart is Empty")
       return
     }
@@ -49,25 +110,28 @@ const Checkout = () => {
       createdAt: new Date().toISOString(),
       email: data.email,
       orders: cartItems,
-      userId: userData || "USR001",
+      userId: userData.id,
+      orderTotal: cartTotal,
       country: data.country,
       state: data.state,
       city: data.city,
       zip: data.zip,
       address: `${data.address1}${data.address2 ? `, ${data.address2}` : ""}`
     }
-    await createOrder()
+    await createOrder(payload)
+    toast.success("Order Placed Successfully")
+    dispatch(clearCart())
   }
   return (
     <>
-      {/* {JSON.stringify(userData,null,2)} */}
+      {/* {JSON.stringify(orderData,null,2)} */}
       <BreadCrumbs />
       <div className="ltn__checkout-area mb-100">
         <Container>
           <Row>
             <Col lg={12}>
               <div className="ltn__checkout-inner">
-                {!Boolean(isLoggedIn) && <div className="ltn__checkout-single-content ltn__returning-customer-wrap">
+                {!isLoggedIn && <div className="ltn__checkout-single-content ltn__returning-customer-wrap">
                   <h5>
                     Returning customer?{" "}
                     <Link
@@ -89,31 +153,37 @@ const Checkout = () => {
                         <div className="col-md-6">
                           <div className="input-item input-item-name">
                             <Form.Control type="text" name="firstname" placeholder="First name" {...register("firstname")} />
+                            <small className="text-danger">{errors?.firstname?.message}</small>
                           </div>
                         </div>
                         <div className="col-md-6">
                           <div className="input-item input-item-name">
                             <Form.Control type="text" name="lastname" placeholder="Last name" {...register("lastname")} />
+                            <small className="text-danger">{errors?.lastname?.message}</small>
                           </div>
                         </div>
                         <div className="col-md-6">
                           <div className="input-item input-item-email">
                             <Form.Control type="email" name="email" placeholder="email address" {...register("email")} />
+                            <small className="text-danger">{errors?.email?.message}</small>
                           </div>
                         </div>
                         <div className="col-md-6">
                           <div className="input-item input-item-phone">
-                            <Form.Control type="text" name="phonenumber" placeholder="phone number" />
+                            <Form.Control type="text" name="phonenumber" placeholder="phone number" {...register("phonenumber")} />
+                            <small className="text-danger">{errors?.phonenumber?.message}</small>
                           </div>
                         </div>
                         <div className="col-md-6">
                           <div className="input-item input-item-website">
-                            <Form.Control type="text" name="company" placeholder="Company name (optional)" />
+                            <Form.Control type="text" name="company" placeholder="Company name (optional)" {...register("company")} />
+                            <small className="text-danger">{errors?.company?.message}</small>
                           </div>
                         </div>
                         <div className="col-md-6">
                           <div className="input-item input-item-website">
-                            <Form.Control type="text" name="phone" placeholder="Company address (optional)" />
+                            <Form.Control type="text" name="company address" placeholder="Company address (optional)" {...register("companyAddress")} />
+                            <small className="text-danger">{errors?.companyAddress?.message}</small>
                           </div>
                         </div>
                       </div>
@@ -131,6 +201,7 @@ const Checkout = () => {
                               <option>United Kingdom (UK)</option>
                               <option>United States (US)</option>
                             </Form.Select>
+                            <small className="text-danger">{errors?.country?.message}</small>
                           </div>
                         </div>
                         <div className="col-lg-12 col-md-12">
@@ -138,12 +209,14 @@ const Checkout = () => {
                           <div className="row">
                             <div className="col-md-6">
                               <div className="input-item">
-                                <Form.Control type="text" placeholder="House number and street name" {...register("address1")}/>
+                                <Form.Control type="text" placeholder="House number and street name" {...register("address1")} />
+                                <small className="text-danger">{errors?.address1?.message}</small>
                               </div>
                             </div>
                             <div className="col-md-6">
                               <div className="input-item">
                                 <Form.Control type="text" placeholder="Apartment, suite, unit etc. (optional)" {...register("address2")} />
+                                <small className="text-danger">{errors?.address2?.message}</small>
                               </div>
                             </div>
                           </div>
@@ -151,19 +224,28 @@ const Checkout = () => {
                         <div className="col-lg-4 col-md-6">
                           <h6>Town / City</h6>
                           <div className="input-item">
-                            <Form.Control type="text" placeholder="City" {...register("city")}/>
+                            <Form.Control type="text" placeholder="City" {...register("city")} />
+                            <small className="text-danger">
+                              {errors?.city?.message}
+                            </small>
                           </div>
                         </div>
                         <div className="col-lg-4 col-md-6">
                           <h6>State </h6>
                           <div className="input-item">
-                            <Form.Control type="text" placeholder="State" {...register("state")}/>
+                            <Form.Control type="text" placeholder="State" {...register("state")} />
+                            <small className="text-danger">
+                              {errors?.state?.message}
+                            </small>
                           </div>
                         </div>
                         <div className="col-lg-4 col-md-6">
                           <h6>Zip</h6>
                           <div className="input-item">
-                            <Form.Control type="text" placeholder="Zip" {...register("zip")}/>
+                            <Form.Control type="text" placeholder="Zip" {...register("zip")} />
+                            <small className="text-danger">
+                              {errors?.zip?.message}
+                            </small>
                           </div>
                         </div>
                       </div>

@@ -51,7 +51,7 @@ export const createOrder = async (orderData) => {
   const response = await mockApi.post("/order", orderData)
   return response
 }
-export const getOrderById = async (id) => {
-  const response = await mockApi.get(`/order/${id}`)
+export const getOrderByUserId = async (userId) => {
+  const response = await mockApi.get(`/order?userId=${userId}`)
   return response
 }
